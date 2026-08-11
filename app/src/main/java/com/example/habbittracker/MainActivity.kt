@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
     @Composable
     fun GreetingSection(name: String, streak: Int, modifier: Modifier = Modifier) {
         Column {
+
             Text(
                 text = "Привет $name!",
                 modifier = modifier
@@ -55,7 +58,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun CardLevel(level: Int, xp: Int, ){
+fun CardLevel(level: Int, xp: Int){
     Column(Modifier.background(color = Color.Gray)) {
         Text(text = "Уровень $level")
 
@@ -64,21 +67,20 @@ fun CardLevel(level: Int, xp: Int, ){
 
 
         @Composable
-        fun HabitItem(habbit: String, xp: Int){
-            var done by remember { mutableStateOf(false) }
-            //// remember — сохраняем, mutableStateOf — состояние, by — работаем с ним как с обычной переменной
+        fun HabitItem(habbit: String, xp: Int, done: Boolean, onToggle: () -> Unit){
+
             Row(
                 modifier =  Modifier
-                    .background(Color.Red)
+                    .background(Color.Cyan)
                     .padding(5.dp)
                     .fillMaxWidth()
                 .clickable()
                 {
-                done = !done //«Возьми текущее значение done, переверни его и запиши обратно в done».
+                onToggle()
             }) {
                 Checkbox(checked = done, onCheckedChange = null) //false → true
-if (done == false){
-    Text(text = habbit, )
+if (!done){
+    Text(text = habbit)
 }
                 else (
         Text(text = habbit, modifier = Modifier.alpha(0.5f), textDecoration = TextDecoration.LineThrough ))
@@ -94,14 +96,52 @@ if (done == false){
 
     @Composable
     fun HomeScreen(modifier: Modifier = Modifier) {
-
+var runningDone by remember { mutableStateOf(false ) }// выплолнение бега
+        var smokingDone by remember { mutableStateOf(false) } //сигареты
+        var showerDone by remember { mutableStateOf(false  ) }// душ
+        val runningXp = if (runningDone) 500 else 0
+        val smokingXp = if (smokingDone) 25 else 0
+        val showerXp = if (showerDone) 10 else 0
+//        val totalXp = runningXp + smokingXp + showerXp
+        val allDone = runningDone && smokingDone && showerDone
+        var totalXp by remember { mutableIntStateOf(0) }
+        var dayCompleted by remember { mutableStateOf(false) }
+var streak by remember { mutableIntStateOf(0) }
+val level = totalXp / 1000
+        val newXp = totalXp % 1000
         Column(modifier) {
 
-            GreetingSection(name = "Артём", streak = 10, modifier = Modifier.padding(bottom = 5.dp))
-            CardLevel(xp = 100, level = 2)
-            HabitItem(xp = 10, habbit = "Пробежка")
-            HabitItem(xp = 25, habbit = "Сигареты")
-            HabitItem(xp = 10, habbit = "Душ")
+            Button(
+                onClick = {
+                    if (allDone && ! dayCompleted){
+                        streak++
+                        totalXp += showerXp + runningXp + smokingXp
+                        dayCompleted = true
+                        runningDone = false
+                        showerDone = false
+                        smokingDone = false
+
+                    }
+                }
+            ) {
+                Text("Завершить день")
+            }
+            Button(
+                onClick = {
+                        dayCompleted = false
+                }
+            ) {
+                Text("Начать день")
+            }
+GreetingSection(name = "Артём", streak = streak, modifier = Modifier.padding(bottom = 5.dp))
+
+            CardLevel(xp = newXp, level = level )
+
+
+            HabitItem(xp = runningXp, done = runningDone, onToggle = {runningDone = !runningDone}, habbit = "Пробежка")
+
+            HabitItem(xp = smokingXp, done = smokingDone,onToggle = {smokingDone = !smokingDone}, habbit = "Сигареты")
+            HabitItem(xp = showerXp, done = showerDone,onToggle = {showerDone = !showerDone}, habbit = "Душ")
 
 
 
