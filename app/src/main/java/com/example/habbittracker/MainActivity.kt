@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import model.Habit
 
             class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,24 +70,25 @@ fun CardLevel(level: Int, xp: Int){
 
 
         @Composable
-        fun HabitItem(habbit: String, xp: Int, done: Boolean, onToggle: () -> Unit){
+        fun HabitItem(habit: Habit, onToggle: () -> Unit){
+
 
             Row(
                 modifier =  Modifier
                     .background(Color.Cyan)
                     .padding(5.dp)
                     .fillMaxWidth()
-                .clickable()
-                {
-                onToggle()
-            }) {
-                Checkbox(checked = done, onCheckedChange = null) //false → true
-if (!done){
-    Text(text = habbit)
+                    .clickable
+                    {
+                        onToggle()
+                    })  {
+              Checkbox(checked = habit.done, onCheckedChange = null) //false → true
+if (!habit.done){
+   Text(text = habit.name)
 }
-                else (
-        Text(text = habbit, modifier = Modifier.alpha(0.5f), textDecoration = TextDecoration.LineThrough ))
-                Text(text =  "+ $xp HP ", Modifier.padding(start = 25.dp))
+                else {
+        Text(text = habit.name, modifier = Modifier.alpha(0.5f), textDecoration = TextDecoration.LineThrough )
+                Text(text =  "+ ${habit.xp} HP ", Modifier.padding(start = 25.dp))}
 
 
             }
@@ -96,52 +100,80 @@ if (!done){
 
     @Composable
     fun HomeScreen(modifier: Modifier = Modifier) {
-var runningDone by remember { mutableStateOf(false ) }// выплолнение бега
-        var smokingDone by remember { mutableStateOf(false) } //сигареты
-        var showerDone by remember { mutableStateOf(false  ) }// душ
-        val runningXp = if (runningDone) 500 else 0
-        val smokingXp = if (smokingDone) 25 else 0
-        val showerXp = if (showerDone) 10 else 0
+
+        // Состояние списка привычек.
+// Изменяем список целиком, а не отдельный Habit.
+
+
+        var habits by remember { mutableStateOf(
+            listOf(
+                Habit("Пробежка", 10, false, id = 1),
+                Habit("Курение", 20, false, id = 2),
+                Habit("Душ", 10, false, id = 3),
+
+                )
+        ) }
+
+        val completedHabit = habits.filter { it.done }
+        val allXp = completedHabit.sumOf { it.xp  }
+        val allDone = habits.all { it.done }
+
+
+
 //        val totalXp = runningXp + smokingXp + showerXp
-        val allDone = runningDone && smokingDone && showerDone
         var totalXp by remember { mutableIntStateOf(0) }
         var dayCompleted by remember { mutableStateOf(false) }
 var streak by remember { mutableIntStateOf(0) }
 val level = totalXp / 1000
         val newXp = totalXp % 1000
+
         Column(modifier) {
+            GreetingSection(name = "Артём", streak = streak, modifier = Modifier.padding(bottom = 5.dp))
+            CardLevel(xp = newXp, level = level )
+            LazyColumn {
+                items(habits, key = { habit -> habit.id }) {
+                        habit -> HabitItem(habit) {
+                            habits = habits.map { habitsFromList ->
+                                if (habitsFromList.id == habit.id){
+                                    habitsFromList.copy(done = !habitsFromList.done)
+                                } else{
+                                    habitsFromList
+                                }
+
+                            }
+                }
+                }            }
 
             Button(
                 onClick = {
-                    if (allDone && ! dayCompleted){
-                        streak++
-                        totalXp += showerXp + runningXp + smokingXp
-                        dayCompleted = true
-                        runningDone = false
-                        showerDone = false
-                        smokingDone = false
+if (allDone && !dayCompleted){
+    totalXp += allXp
+    dayCompleted = true
+    streak++
+
+}
+
+                }
+            ) {
+                    Text("Завершить д,ень")
+                }
+                Button(
+                    onClick = {
+                        if (!dayCompleted) {
+                            streak = 0
+                        }
+                        dayCompleted =false
+                        habits =  habits.map { clearHabits ->  clearHabits.copy(done = false)
+                        }
 
                     }
+                ) {
+                    Text("Начать день")
                 }
-            ) {
-                Text("Завершить день")
-            }
-            Button(
-                onClick = {
-                        dayCompleted = false
-                }
-            ) {
-                Text("Начать день")
-            }
-GreetingSection(name = "Артём", streak = streak, modifier = Modifier.padding(bottom = 5.dp))
-
-            CardLevel(xp = newXp, level = level )
 
 
-            HabitItem(xp = runningXp, done = runningDone, onToggle = {runningDone = !runningDone}, habbit = "Пробежка")
 
-            HabitItem(xp = smokingXp, done = smokingDone,onToggle = {smokingDone = !smokingDone}, habbit = "Сигареты")
-            HabitItem(xp = showerXp, done = showerDone,onToggle = {showerDone = !showerDone}, habbit = "Душ")
+
 
 
 
