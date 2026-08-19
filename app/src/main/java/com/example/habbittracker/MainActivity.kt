@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -100,6 +101,7 @@ if (!habit.done){
 
     @Composable
     fun HomeScreen(modifier: Modifier = Modifier) {
+        var newHabitName by remember { mutableStateOf("") }
 
         // Состояние списка привычек.
 // Изменяем список целиком, а не отдельный Habit.
@@ -143,6 +145,22 @@ val level = totalXp / 1000
                             }
                 }
                 }            }
+
+            Button(
+                onClick
+                = {
+                    if (newHabitName.isNotBlank()){
+                        val newId =(habits.maxOfOrNull { it.id  } ?: 0) + 1
+                        val newHabit =  Habit(name = newHabitName, id = newId, done = false, xp = 10)
+                        habits = habits + newHabit
+                        newHabitName = ""
+                    }
+
+
+
+                }) {Text("Добавить") }
+            TextField(
+                onValueChange = {newValue -> newHabitName = newValue}, value = newHabitName)
 
             Button(
                 onClick = {
