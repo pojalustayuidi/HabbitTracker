@@ -8,24 +8,50 @@ import model.Habit
 
 class HabitViewModel : ViewModel() {
 
-    var totalxp by mutableStateOf(0)
-    private  set
-   var habits by mutableStateOf(listOf(
-       Habit("Пробежка", 10, false, id = 1),
-       Habit("Курение", 20, false, id = 2),
-       Habit("Душ", 10, false, id = 3),
-   ))
+    var totalXp by mutableStateOf(0)
         private set
-    fun toogleHabit(id: Int){
+
+    fun addBonus(amount: Int){
+        totalXp = totalXp + amount
+    }
+
+    var habits by mutableStateOf(
+        listOf(
+            Habit("Пробежка", 10, false, id = 1),
+            Habit("Курение", 20, false, id = 2),
+            Habit("Душ", 10, false, id = 3),
+        )
+    )
+        private set
+
+    fun toogleHabit(id: Int) {
         habits = habits.map { habitsFromList ->
-            if (habitsFromList.id == id){
+            if (habitsFromList.id == id) {
                 habitsFromList.copy(done = !habitsFromList.done)
-            } else{
+            } else {
                 habitsFromList
             }
-    }}
-    fun addBonus(amount: Int){
-        totalxp = totalxp + amount
+        }
     }
+
+    var dayCompleted by mutableStateOf(false)
+        private set
+    fun completeDay(){
+        val allDone = habits.all { it.done }
+        val allXp = habits.filter { it.done }.sumOf {it.xp}
+        if (allDone && !dayCompleted){
+            totalXp += allXp
+            dayCompleted = true
+            streak++
+
+        }
+    }
+
+    var streak by mutableStateOf(0)
+        private set
+
+
+
+
 }
 
