@@ -12,7 +12,7 @@ class HabitViewModel : ViewModel() {
         private set
 
     fun addBonus(amount: Int){
-        totalXp = totalXp + amount
+        totalXp += amount
     }
 
     var habits by mutableStateOf(
@@ -31,6 +31,17 @@ class HabitViewModel : ViewModel() {
             } else {
                 habitsFromList
             }
+        }
+    }
+    fun deleteHabit(id: Int){
+        habits = habits.filter{it.id != id}
+
+    }
+    fun addHabit(name: String){
+        if(name.isNotBlank()){
+            val newId = (habits.maxOfOrNull { it.id } ?: 0) + 1
+            val newHabit = Habit(name = name, id = newId, done = false, xp =  10)
+            habits = habits  + newHabit
         }
     }
 

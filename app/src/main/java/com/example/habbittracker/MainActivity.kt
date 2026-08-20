@@ -1,6 +1,7 @@
             package com.example.habbittracker
 
 import  android.os.Bundle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
@@ -139,21 +140,13 @@ fun CardLevel(level: Int, xp: Int){
 
 
     @Composable
-    fun HomeScreen(modifier: Modifier = Modifier) {
+    fun HomeScreen(
+        modifier: Modifier = Modifier,
+        viewModel: HabitViewModel = viewModel()
+                   ) {
         var newHabitName by remember { mutableStateOf("") }
 
-        var habits by remember { mutableStateOf(
-            listOf(
-                Habit("Пробежка", 10, false, id = 1),
-                Habit("Курение", 20, false, id = 2),
-                Habit("Душ", 10, false, id = 3),
 
-                )
-        ) }
-
-        val completedHabit = habits.filter { it.done }
-        val allXp = completedHabit.sumOf { it.xp  }
-        val allDone = habits.all { it.done }
 
 
 
@@ -167,19 +160,11 @@ val level = totalXp / 1000
             GreetingSection(name = "Артём", streak = streak, modifier = Modifier.padding(bottom = 5.dp))
             CardLevel(xp = newXp, level = level )
             LazyColumn {
-                items(habits, key = { habit -> habit.id }) {
-                        habit -> HabitItem(habit, onToggle = {
-                    habits = habits.map { habitsFromList ->
-                        if (habitsFromList.id == habit.id){
-                            habitsFromList.copy(done = !habitsFromList.done)
-                        } else{
-                            habitsFromList
-                        }
-
-                    }
+                items(viewModel.habits, key = { habit -> habit.id }) {
+                        habit -> HabitItem(habit, onToggle = {viewModel.toogleHabit(habit.id)
 
                 }, onDelete = {
-                    habits = habits.filter{it.id != habit.id}
+                    viewModel.deleteHabit(habit.id)
                 }
                         )
 
@@ -192,12 +177,8 @@ Row {
 
         onClick
         = {
-            if (newHabitName.isNotBlank()) {
-                val newId = (habits.maxOfOrNull { it.id } ?: 0) + 1
-                val newHabit = Habit(name = newHabitName, id = newId, done = false, xp = 10)
-                habits = habits + newHabit
-                newHabitName = ""
-            }
+           viewModel.addHabit(newHabitName)
+            newHabitName = ""
 
 
         }
@@ -213,12 +194,7 @@ Row {
 
             Button(
                 onClick = {
-if (allDone && !dayCompleted){
-    totalXp += allXp
-    dayCompleted = true
-    streak++
-
-}
+                    viewModel.completeDay()
 
                 }
             ) {
@@ -226,14 +202,7 @@ if (allDone && !dayCompleted){
                 }
                 Button(
                     onClick = {
-                        if (!dayCompleted) {
-                            streak = 0
-                        }
-                        dayCompleted =false
-                        habits =  habits.map { clearHabits ->  clearHabits.copy(done = false)
-
-                        }
-
+                        viewModel.startNewDay()
                     }
                 ) {
                     Text("Начать день")
