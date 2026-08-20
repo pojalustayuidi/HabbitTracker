@@ -47,6 +47,14 @@ class HabitViewModel : ViewModel() {
         }
     }
 
+    fun startNewDay(){
+if (!dayCompleted){
+    streak = 0
+
+}
+        habits = habits.map { clearHabits -> clearHabits.copy(done = false) }
+        dayCompleted = false
+    }
     var streak by mutableStateOf(0)
         private set
 
