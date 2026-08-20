@@ -12,10 +12,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,11 +31,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import model.Habit
 
             class MainActivity : ComponentActivity() {
@@ -48,15 +60,28 @@ import model.Habit
     @Composable
     fun GreetingSection(name: String, streak: Int, modifier: Modifier = Modifier) {
         Column {
-
             Text(
                 text = "Привет $name!",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+
                 modifier = modifier
+
             )
-            Text(
-                text = "$streak  Стрик",
-                modifier = modifier
-            )
+            Row {
+                Icon(
+                    imageVector = Icons.Default.LocalFireDepartment,
+                    contentDescription = "Streak",
+                    tint = Color.Red,
+                    modifier = Modifier.size(21.dp)
+                )
+                Text(
+                    text = "$streak  Стрик",
+                    modifier = modifier
+                )
+
+            }
+
         }
     }
 
@@ -71,28 +96,42 @@ fun CardLevel(level: Int, xp: Int){
 
 
         @Composable
-        fun HabitItem(habit: Habit, onToggle: () -> Unit){
+        fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
+            OutlinedCard(
+                        modifier = Modifier.padding(vertical = 4.dp)
+
+                ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier =  Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                        )  {
+
+                    Checkbox(modifier = Modifier.padding(horizontal = 6.dp),
+
+                        checked = habit.done, onCheckedChange = {onToggle()}) //false → true
+                    if (!habit.done){
+                        Text(text = habit.name)
+                    }
+                    else {
+                        Text(text = habit.name, modifier = Modifier.alpha(0.5f), textDecoration = TextDecoration.LineThrough )
+                        Text(text =  "+ ${habit.xp} HP ", Modifier.padding(start = 25.dp))}
+                    IconButton(
+                        onClick = {
+                            onDelete()
+                        },
+                    ){
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Удалить привычку")
+                    }
 
 
-            Row(
-                modifier =  Modifier
-                    .background(Color.Cyan)
-                    .padding(5.dp)
-                    .fillMaxWidth()
-                    .clickable
-                    {
-                        onToggle()
-                    })  {
-              Checkbox(checked = habit.done, onCheckedChange = null) //false → true
-if (!habit.done){
-   Text(text = habit.name)
-}
-                else {
-        Text(text = habit.name, modifier = Modifier.alpha(0.5f), textDecoration = TextDecoration.LineThrough )
-                Text(text =  "+ ${habit.xp} HP ", Modifier.padding(start = 25.dp))}
 
+                }
 
             }
+
         }
 
 
@@ -102,10 +141,6 @@ if (!habit.done){
     @Composable
     fun HomeScreen(modifier: Modifier = Modifier) {
         var newHabitName by remember { mutableStateOf("") }
-
-        // Состояние списка привычек.
-// Изменяем список целиком, а не отдельный Habit.
-
 
         var habits by remember { mutableStateOf(
             listOf(
@@ -122,7 +157,6 @@ if (!habit.done){
 
 
 
-//        val totalXp = runningXp + smokingXp + showerXp
         var totalXp by remember { mutableIntStateOf(0) }
         var dayCompleted by remember { mutableStateOf(false) }
 var streak by remember { mutableIntStateOf(0) }
@@ -134,33 +168,48 @@ val level = totalXp / 1000
             CardLevel(xp = newXp, level = level )
             LazyColumn {
                 items(habits, key = { habit -> habit.id }) {
-                        habit -> HabitItem(habit) {
-                            habits = habits.map { habitsFromList ->
-                                if (habitsFromList.id == habit.id){
-                                    habitsFromList.copy(done = !habitsFromList.done)
-                                } else{
-                                    habitsFromList
-                                }
+                        habit -> HabitItem(habit, onToggle = {
+                    habits = habits.map { habitsFromList ->
+                        if (habitsFromList.id == habit.id){
+                            habitsFromList.copy(done = !habitsFromList.done)
+                        } else{
+                            habitsFromList
+                        }
 
-                            }
-                }
-                }            }
-
-            Button(
-                onClick
-                = {
-                    if (newHabitName.isNotBlank()){
-                        val newId =(habits.maxOfOrNull { it.id  } ?: 0) + 1
-                        val newHabit =  Habit(name = newHabitName, id = newId, done = false, xp = 10)
-                        habits = habits + newHabit
-                        newHabitName = ""
                     }
 
+                }, onDelete = {
+                    habits = habits.filter{it.id != habit.id}
+                }
+                        )
+
+                }            }
+Row {
+    TextField(
+        label = {Text("Новая привычка")},
+        onValueChange = {newValue -> newHabitName = newValue}, value = newHabitName)
+    IconButton(
+
+        onClick
+        = {
+            if (newHabitName.isNotBlank()) {
+                val newId = (habits.maxOfOrNull { it.id } ?: 0) + 1
+                val newHabit = Habit(name = newHabitName, id = newId, done = false, xp = 10)
+                habits = habits + newHabit
+                newHabitName = ""
+            }
 
 
-                }) {Text("Добавить") }
-            TextField(
-                onValueChange = {newValue -> newHabitName = newValue}, value = newHabitName)
+        }
+
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Добавить привычку"
+        )
+    }
+}
+
 
             Button(
                 onClick = {
@@ -182,6 +231,7 @@ if (allDone && !dayCompleted){
                         }
                         dayCompleted =false
                         habits =  habits.map { clearHabits ->  clearHabits.copy(done = false)
+
                         }
 
                     }
