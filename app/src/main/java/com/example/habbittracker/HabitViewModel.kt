@@ -16,18 +16,16 @@ class HabitViewModel : ViewModel() {
        Habit("Душ", 10, false, id = 3),
    ))
         private set
-
+    fun toogleHabit(id: Int){
+        habits = habits.map { habitsFromList ->
+            if (habitsFromList.id == id){
+                habitsFromList.copy(done = !habitsFromList.done)
+            } else{
+                habitsFromList
+            }
+    }}
     fun addBonus(amount: Int){
         totalxp = totalxp + amount
     }
 }
-// Задача 1. Перенести логику из HomeScreen используя ViewModel
-//   var habits by remember { mutableStateOf(
-//            listOf(
-//                Habit("Пробежка", 10, false, id = 1),
-//                Habit("Курение", 20, false, id = 2),
-//                Habit("Душ", 10, false, id = 3),
-//
-//                )
-//        ) }
 
