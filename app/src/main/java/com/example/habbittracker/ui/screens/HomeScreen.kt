@@ -23,7 +23,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habbittracker.HabitViewModel
 import com.example.habbittracker.ui.components.CardLevel
@@ -32,6 +34,7 @@ import com.example.habbittracker.ui.components.HabitItem
 import com.example.habbittracker.ui.components.StatCard
 import com.example.habbittracker.ui.theme.HabitAccent
 import com.example.habbittracker.ui.theme.HabitFire
+import com.example.habbittracker.ui.theme.HabitGreen
 
 @Composable
 fun HomeScreen(
@@ -44,10 +47,17 @@ fun HomeScreen(
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
-    Column(modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(modifier = modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp))
+    {
+        Text(
+            text = "CoinHabit",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = HabitGreen
+        )
         GreetingSection(name = "Артём",  modifier = Modifier.padding(bottom = 5.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp),  ){
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)  ){
 
             StatCard(
             icon = Icons.Default.LocalFireDepartment,
@@ -68,6 +78,7 @@ fun HomeScreen(
 
 
             ) }
+
 
         CardLevel(xp = newXp, level = level)
         LazyColumn {
