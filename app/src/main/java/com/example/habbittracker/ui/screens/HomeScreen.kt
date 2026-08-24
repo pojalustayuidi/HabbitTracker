@@ -1,5 +1,6 @@
 package com.example.habbittracker.ui.screens
 
+import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,10 +32,12 @@ import com.example.habbittracker.HabitViewModel
 import com.example.habbittracker.ui.components.CardLevel
 import com.example.habbittracker.ui.components.GreetingSection
 import com.example.habbittracker.ui.components.HabitItem
+import com.example.habbittracker.ui.components.SavingCard
 import com.example.habbittracker.ui.components.StatCard
 import com.example.habbittracker.ui.theme.HabitAccent
 import com.example.habbittracker.ui.theme.HabitFire
 import com.example.habbittracker.ui.theme.HabitGreen
+import com.example.habbittracker.ui.theme.HabitTextPrimary
 
 @Composable
 fun HomeScreen(
@@ -63,7 +66,7 @@ fun HomeScreen(
             icon = Icons.Default.LocalFireDepartment,
             iconTint = HabitFire,
             title = "Текущий стрик",
-            value = "12",
+            value = viewModel.streak,
             subtitle = "дней",
                 modifier = Modifier.weight(1f)
 
@@ -72,7 +75,7 @@ fun HomeScreen(
                 icon = Icons.Default.Star,
                 iconTint = HabitAccent,
                 title = "Монеты",
-                value = "$totalXp",
+                value = viewModel.totalXp,
                 subtitle = "+12 сегодня",
                 modifier = Modifier.weight(1f)
 
@@ -81,6 +84,7 @@ fun HomeScreen(
 
 
         CardLevel(xp = newXp, level = level)
+        Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
             items(viewModel.habits, key = { habit -> habit.id }) { habit ->
                 HabitItem(habit, onToggle = {
@@ -93,6 +97,8 @@ fun HomeScreen(
 
             }
         }
+        SavingCard(amount = 10)
+
         Row {
             TextField(
                 label = { Text("Новая привычка") },

@@ -30,7 +30,7 @@ fun StatCard(
     icon: ImageVector,
     iconTint: Color,
     title: String,
-    value: String,
+    value: Int,
     subtitle: String,
     modifier: Modifier = Modifier
 )
@@ -55,8 +55,7 @@ OutlinedCard (modifier = modifier,
         ) {
 
             Text(title, color = HabitTextPrimary)
-            Text(value, fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                )
+           value
             Text(subtitle)
         }
     }
