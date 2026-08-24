@@ -1,7 +1,6 @@
 package com.example.habbittracker.ui.components
 
 
-import android.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.ui.theme.HabitBorder
 import com.example.habbittracker.ui.theme.HabitSurface
-import com.example.habbittracker.ui.theme.HabitTextPrimary
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable

@@ -84,6 +84,8 @@ val totalXp by viewModel.totalXp.collectAsState()
 
 
         CardLevel(xp = newXp, level = level)
+        SavingCard(amount = 10)
+
         Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
             items(habits, key = { habit -> habit.id }) { habit ->
@@ -97,7 +99,6 @@ val totalXp by viewModel.totalXp.collectAsState()
 
             }
         }
-        SavingCard(amount = 10)
 
         Row {
             TextField(
