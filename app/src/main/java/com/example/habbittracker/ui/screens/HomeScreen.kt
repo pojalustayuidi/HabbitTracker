@@ -46,6 +46,7 @@ fun HomeScreen(
     var newHabitName by remember { mutableStateOf("") }
 val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
+    val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
@@ -85,7 +86,7 @@ val totalXp by viewModel.totalXp.collectAsState()
         CardLevel(xp = newXp, level = level)
         Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
-            items(viewModel.habits, key = { habit -> habit.id }) { habit ->
+            items(habits, key = { habit -> habit.id }) { habit ->
                 HabitItem(habit, onToggle = {
                     viewModel.toogleHabit(habit.id)
 
