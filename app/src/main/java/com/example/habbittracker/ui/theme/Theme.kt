@@ -12,15 +12,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = HabitGreenDark,
+    secondary = HabitAccentDark,
+    onPrimary = HabitTextPrimaryDark,
+    background = HabitBackgroundDark,
+    onBackground = HabitTextPrimaryDark,
+    surface = HabitSurfaceDark,
+    onSurface = HabitTextPrimaryDark,
+    surfaceVariant = HabitGreenLightDark
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = HabitGreen,
+    secondary = HabitAccent,
+    onPrimary = HabitSurface,
+    background = HabitBackground,
+    onBackground = HabitTextPrimary,
+    surface = HabitSurface,
+    onSurface = HabitTextPrimary,
+    surfaceVariant = HabitGreenLight
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -37,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 fun HabbitTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

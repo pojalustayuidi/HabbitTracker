@@ -1,9 +1,8 @@
 package com.example.habbittracker.ui.components
 
-import androidx.compose.foundation.background
+import android.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -11,24 +10,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitTextPrimary
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun CardLevel(level: Int, xp: Int){
+fun SavingCard(amount: Int, modifier: Modifier = Modifier){
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = CardDefaults.shape,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {  Column(Modifier.padding(16.dp )) {
-        Text(text = "Уровень $level",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = HabitTextPrimary,
-
+        colors = CardDefaults.outlinedCardColors(containerColor =HabitGreen)
+    )
+    {
+        Column() {
+            Text("Сэкономлено всего", color = HabitTextPrimary)
+            Text("$amount ₽", fontWeight = FontWeight.ExtraBold, fontSize = 32.sp
             )
-        Text(text = "$xp / 1000 XP", color = HabitTextSecondary)}
+            Text("+ 78   Сегодня")
+        }
+    }
 
-    }}
+}

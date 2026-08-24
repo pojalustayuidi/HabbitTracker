@@ -1,12 +1,17 @@
 package com.example.habbittracker.ui.screens
 
+import android.R
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,12 +24,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habbittracker.HabitViewModel
 import com.example.habbittracker.ui.components.CardLevel
 import com.example.habbittracker.ui.components.GreetingSection
 import com.example.habbittracker.ui.components.HabitItem
+import com.example.habbittracker.ui.components.SavingCard
+import com.example.habbittracker.ui.components.StatCard
+import com.example.habbittracker.ui.theme.HabitAccent
+import com.example.habbittracker.ui.theme.HabitFire
+import com.example.habbittracker.ui.theme.HabitGreen
+import com.example.habbittracker.ui.theme.HabitTextPrimary
 
 @Composable
 fun HomeScreen(
@@ -34,14 +47,44 @@ fun HomeScreen(
     var newHabitName by remember { mutableStateOf("") }
 
     var totalXp by remember { mutableIntStateOf(0) }
-    var dayCompleted by remember { mutableStateOf(false) }
-    var streak by remember { mutableIntStateOf(0) }
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
-    Column(modifier) {
-        GreetingSection(name = "Артём", streak = streak, modifier = Modifier.padding(bottom = 5.dp))
+    Column(modifier = modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp))
+    {
+        Text(
+            text = "CoinHabit",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = HabitGreen
+        )
+        GreetingSection(name = "Артём",  modifier = Modifier.padding(bottom = 5.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)  ){
+
+            StatCard(
+            icon = Icons.Default.LocalFireDepartment,
+            iconTint = HabitFire,
+            title = "Текущий стрик",
+            value = viewModel.streak,
+            subtitle = "дней",
+                modifier = Modifier.weight(1f)
+
+            )
+            StatCard(
+                icon = Icons.Default.Star,
+                iconTint = HabitAccent,
+                title = "Монеты",
+                value = viewModel.totalXp,
+                subtitle = "+12 сегодня",
+                modifier = Modifier.weight(1f)
+
+
+            ) }
+
+
         CardLevel(xp = newXp, level = level)
+        Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
             items(viewModel.habits, key = { habit -> habit.id }) { habit ->
                 HabitItem(habit, onToggle = {
@@ -54,6 +97,8 @@ fun HomeScreen(
 
             }
         }
+        SavingCard(amount = 10)
+
         Row {
             TextField(
                 label = { Text("Новая привычка") },
