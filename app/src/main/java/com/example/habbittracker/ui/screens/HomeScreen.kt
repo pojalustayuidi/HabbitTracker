@@ -45,6 +45,7 @@ fun HomeScreen(
 ) {
     var newHabitName by remember { mutableStateOf("") }
 val totalXp by viewModel.totalXp.collectAsState()
+    val streak by viewModel.streak.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
@@ -64,7 +65,7 @@ val totalXp by viewModel.totalXp.collectAsState()
             icon = Icons.Default.LocalFireDepartment,
             iconTint = HabitFire,
             title = "Текущий стрик",
-            value = viewModel.streak,
+            value = streak,
             subtitle = "дней",
                 modifier = Modifier.weight(1f)
 

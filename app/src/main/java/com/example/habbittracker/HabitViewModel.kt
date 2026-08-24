@@ -15,7 +15,7 @@ class HabitViewModel : ViewModel() {
         val totalXp: StateFlow<Int> = _totalXp.asStateFlow()
 
     fun addBonus(amount: Int){
-        _totalXp.value = _totalXp.value + amount
+        _totalXp.value += amount
     }
 
     var habits by mutableStateOf(
@@ -48,29 +48,29 @@ class HabitViewModel : ViewModel() {
         }
     }
 
-    var dayCompleted by mutableStateOf(false)
-        private set
+    private val _dayCompleted = MutableStateFlow(false)
+    val dayCompleted: StateFlow<Boolean> = _dayCompleted.asStateFlow()
     fun completeDay(){
         val allDone = habits.all { it.done }
         val allXp = habits.filter { it.done }.sumOf {it.xp}
-        if (allDone && !dayCompleted){
-            _totalXp.value = _totalXp.value + allXp
-            dayCompleted = true
-            streak++
+        if (allDone && !_dayCompleted.value){
+            _totalXp.value += allXp
+            _dayCompleted.value = true
+            _streak.value++
 
         }
     }
 
     fun startNewDay(){
-if (!dayCompleted){
-    streak = 0
+if (!_dayCompleted.value){
+    _streak.value = 0
 
 }
         habits = habits.map { clearHabits -> clearHabits.copy(done = false) }
-        dayCompleted = false
+        _dayCompleted.value = false
     }
-    var streak by mutableStateOf(0)
-        private set
+    private val _streak  = MutableStateFlow(0)
+        val streak: StateFlow<Int> =_streak.asStateFlow()
 
 
 
