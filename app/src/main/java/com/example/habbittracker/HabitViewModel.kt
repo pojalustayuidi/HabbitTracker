@@ -5,14 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.example.habbittracker.model.Habit
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class HabitViewModel : ViewModel() {
 
-    var totalXp by mutableStateOf(0)
-        private set
+    private val _totalXp = MutableStateFlow(0)
+        val totalXp: StateFlow<Int> = _totalXp.asStateFlow()
 
     fun addBonus(amount: Int){
-        totalXp += amount
+        _totalXp.value = _totalXp.value + amount
     }
 
     var habits by mutableStateOf(
@@ -51,7 +54,7 @@ class HabitViewModel : ViewModel() {
         val allDone = habits.all { it.done }
         val allXp = habits.filter { it.done }.sumOf {it.xp}
         if (allDone && !dayCompleted){
-            totalXp += allXp
+            _totalXp.value = _totalXp.value + allXp
             dayCompleted = true
             streak++
 
