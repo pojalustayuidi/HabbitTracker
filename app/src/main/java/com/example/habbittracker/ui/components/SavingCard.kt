@@ -19,7 +19,7 @@ fun SavingCard(amount: Int, modifier: Modifier = Modifier){
         colors = CardDefaults.outlinedCardColors(containerColor =HabitGreen)
     )
     {
-        Column() {
+        Column {
             Text("Сэкономлено всего", color = HabitTextPrimary)
             Text("$amount ₽", fontWeight = FontWeight.ExtraBold, fontSize = 32.sp
             )

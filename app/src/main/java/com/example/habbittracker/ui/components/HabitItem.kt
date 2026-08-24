@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -40,7 +39,7 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
 
                 checked = habit.done, onCheckedChange = {onToggle()}) //false → true
             if (!habit.done){
-                Column() {Text(text = habit.name)
+                Column {Text(text = habit.name)
                     Text(text = "5/7 дней", color = HabitTextSecondary, fontSize = 12.sp)
                 }
 

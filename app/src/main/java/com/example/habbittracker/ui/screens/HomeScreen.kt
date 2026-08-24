@@ -60,7 +60,7 @@ val totalXp by viewModel.totalXp.collectAsState()
             color = HabitGreen
         )
         GreetingSection(name = "Артём",  modifier = Modifier.padding(bottom = 5.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)  ){
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)  ){
 
             StatCard(
             icon = Icons.Default.LocalFireDepartment,
