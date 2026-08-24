@@ -1,6 +1,5 @@
 package com.example.habbittracker.ui.screens
 
-import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,8 +44,9 @@ fun HomeScreen(
     viewModel: HabitViewModel = viewModel()
 ) {
     var newHabitName by remember { mutableStateOf("") }
-
-    var totalXp by remember { mutableIntStateOf(0) }
+val totalXp by viewModel.totalXp.collectAsState()
+    val streak by viewModel.streak.collectAsState()
+    val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
@@ -66,7 +66,7 @@ fun HomeScreen(
             icon = Icons.Default.LocalFireDepartment,
             iconTint = HabitFire,
             title = "Текущий стрик",
-            value = viewModel.streak,
+            value = streak,
             subtitle = "дней",
                 modifier = Modifier.weight(1f)
 
@@ -75,7 +75,7 @@ fun HomeScreen(
                 icon = Icons.Default.Star,
                 iconTint = HabitAccent,
                 title = "Монеты",
-                value = viewModel.totalXp,
+                value = totalXp,
                 subtitle = "+12 сегодня",
                 modifier = Modifier.weight(1f)
 
@@ -86,7 +86,7 @@ fun HomeScreen(
         CardLevel(xp = newXp, level = level)
         Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
-            items(viewModel.habits, key = { habit -> habit.id }) { habit ->
+            items(habits, key = { habit -> habit.id }) { habit ->
                 HabitItem(habit, onToggle = {
                     viewModel.toogleHabit(habit.id)
 
