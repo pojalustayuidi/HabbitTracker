@@ -7,7 +7,6 @@
         import kotlinx.coroutines.flow.SharingStarted
         import kotlinx.coroutines.flow.StateFlow
         import kotlinx.coroutines.flow.asStateFlow
-        import kotlinx.coroutines.flow.filter
         import kotlinx.coroutines.flow.stateIn
         import kotlinx.coroutines.launch
         import kotlin.collections.emptyList
@@ -29,15 +28,11 @@
             }
 
 
-//            fun toogleHabit(id: Int) {
-//                _habits.value = _habits.value.map { habitsFromList ->
-//                    if (habitsFromList.id == id) {
-//                        habitsFromList.copy(done = !habitsFromList.done)
-//                    } else {
-//                        habitsFromList
-//                    }
-//                }
-//            }
+            fun toogleHabit(id: Int) {
+                viewModelScope.launch {
+                    habitDao.toggleHabitsCompleted(id)
+                }
+            }
             fun deleteHabit(id: Int){
                 viewModelScope.launch {
                     habitDao.deleteHabitById( id  )
@@ -52,8 +47,7 @@
                         val newHabit = Habit(name = name, done = false, xp = 0)
                         habitDao.insertHabit(newHabit)
                     }
-//                    val newHabit = Habit(name = name, id = newId, done = false, xp =  10)
-//                    _habits.value += newHabit
+//
                 }
             }
 
