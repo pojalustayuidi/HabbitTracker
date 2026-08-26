@@ -14,4 +14,10 @@ interface HabitDao {
     @Insert
     suspend fun insertHabit(habit: Habit)
 
+    companion object {
+        fun getAllHabits() {
+            TODO("Not yet implemented")
+        }
+    }
+
 }
