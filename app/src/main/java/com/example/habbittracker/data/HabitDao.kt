@@ -1,7 +1,6 @@
 package com.example.habbittracker.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.habbittracker.model.Habit
@@ -21,4 +20,9 @@ interface HabitDao {
 
     @Query("UPDATE habits_table SET done = NOT done WHERE id = :id")
     suspend fun toggleHabitsCompleted(id: Int)
+    @Query("UPDATE habits_table SET done = 0")
+    suspend fun resetAllHabits()
+
+
+
 }

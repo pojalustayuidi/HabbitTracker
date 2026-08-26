@@ -42,35 +42,35 @@
             fun addHabit(name: String){
 
                 if(name.isNotBlank()){
-//                    val newId = (_habits.value.maxOfOrNull { it.id } ?: 0) + 1
                     viewModelScope.launch {
                         val newHabit = Habit(name = name, done = false, xp = 0)
                         habitDao.insertHabit(newHabit)
                     }
-//
                 }
             }
 
             private val _dayCompleted = MutableStateFlow(false)
             val dayCompleted: StateFlow<Boolean> = _dayCompleted.asStateFlow()
-//            fun completeDay(){
-//                val allDone = _habits.value.all { it.done }
-//                val allXp = _habits.value.filter { it.done }.sumOf {it.xp}
-//                if (allDone && !_dayCompleted.value){
-//                    _totalXp.value += allXp
-//                    _dayCompleted.value = true
-//                    _streak.value++
-//
-//                }
-//            }
+            fun completeDay(){
+                val allDone = habits.value.all { it.done }
+                val allXp = habits.value.filter { it.done }.sumOf {it.xp}
+                if (allDone && !_dayCompleted.value){
+                    _totalXp.value += allXp
+                    _dayCompleted.value = true
+                    _streak.value++
+
+                }
+            }
 
             fun startNewDay(){
         if (!_dayCompleted.value){
             _streak.value = 0
 
         }
-//                _habits.value = _habits.value.map { clearHabits -> clearHabits.copy(done = false) }
-//                _dayCompleted.value = false
+viewModelScope.launch {
+    habitDao.resetAllHabits()
+}
+                _dayCompleted.value = false
             }
             private val _streak  = MutableStateFlow(0)
                 val streak: StateFlow<Int> =_streak.asStateFlow()
