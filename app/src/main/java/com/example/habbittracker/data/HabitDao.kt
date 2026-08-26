@@ -1,6 +1,7 @@
 package com.example.habbittracker.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.habbittracker.model.Habit
@@ -9,15 +10,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HabitDao {
     @Query("SELECT * FROM habits_table")
-    fun getAllHabits():Flow<List<Habit>>
+    fun getAllHabits(): Flow<List<Habit>>
 
     @Insert
     suspend fun insertHabit(habit: Habit)
 
-    companion object {
-        fun getAllHabits() {
-            TODO("Not yet implemented")
-        }
-    }
 
+    @Query("DELETE FROM habits_table WHERE id = :id")
+    suspend fun deleteHabitById(id: Int)
 }

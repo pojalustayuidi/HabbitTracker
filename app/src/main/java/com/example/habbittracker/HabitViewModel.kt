@@ -7,6 +7,7 @@
         import kotlinx.coroutines.flow.SharingStarted
         import kotlinx.coroutines.flow.StateFlow
         import kotlinx.coroutines.flow.asStateFlow
+        import kotlinx.coroutines.flow.filter
         import kotlinx.coroutines.flow.stateIn
         import kotlinx.coroutines.launch
         import kotlin.collections.emptyList
@@ -37,10 +38,12 @@
 //                    }
 //                }
 //            }
-//            fun deleteHabit(id: Int){
-//                _habits.value = _habits.value.filter{it.id != id}
-//
-//            }
+            fun deleteHabit(id: Int){
+                viewModelScope.launch {
+                    habitDao.deleteHabitById( id  )
+                }
+
+            }
             fun addHabit(name: String){
 
                 if(name.isNotBlank()){
