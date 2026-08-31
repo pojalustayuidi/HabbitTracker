@@ -27,7 +27,12 @@
                 _totalXp.value += amount
             }
 
-
+            val totalSavedMoney: StateFlow<Int> = habitDao.getTotalSavedMoney()
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = 0
+                )
             fun toogleHabit(id: Int) {
                 viewModelScope.launch {
                     habitDao.toggleHabitsCompleted(id)

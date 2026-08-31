@@ -23,6 +23,9 @@ interface HabitDao {
     @Query("UPDATE habits_table SET done = 0")
     suspend fun resetAllHabits()
 
+    @Query("SELECT COALESCE(SUM(savedMoney), 0) FROM habits_table WHERE done = 1")
+    fun getTotalSavedMoney() : Flow <Int>
+
 
 
 }
