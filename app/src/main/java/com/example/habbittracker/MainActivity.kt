@@ -1,5 +1,6 @@
             package com.example.habbittracker
 
+import CoinHabitApp
 import  android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +16,7 @@ import com.example.habbittracker.ui.screens.HomeScreen
                     enableEdgeToEdge()
                     setContent {
                         Scaffold { innerPadding ->
-                            HomeScreen(
+                            CoinHabitApp(
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
