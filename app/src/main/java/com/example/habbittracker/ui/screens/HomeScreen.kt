@@ -53,6 +53,7 @@ fun HomeScreen(
 val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
+    val totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
@@ -103,7 +104,7 @@ val totalXp by viewModel.totalXp.collectAsState()
 
             }
         }
-        SavingCard(amount = 10)
+        SavingCard(text = "$totalSavedMoney ")
 
         Row {
             TextField(
