@@ -3,8 +3,8 @@ package com.example.habbittracker.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habbittracker.data.HabitPresets
-import com.example.habbittracker.data.local.HabitDao
 import com.example.habbittracker.data.models.Habit
+import com.example.habbittracker.data.repository.HabitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,66 +12,71 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HabitViewModel(private val habitDao: HabitDao) : ViewModel() {
+class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
 
-    val habits: StateFlow<List<Habit>> = habitDao.getAllHabits()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    val habits: StateFlow<List<Habit>> = repository.allHabits.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
 
     private val _totalXp = MutableStateFlow(0)
-        val totalXp: StateFlow<Int> = _totalXp.asStateFlow()
+    val totalXp: StateFlow<Int> = _totalXp.asStateFlow()
 
-    fun addBonus(amount: Int){
+    fun addBonus(amount: Int) {
         _totalXp.value += amount
     }
-    fun saveSelectedHabit(selectedIds: Set<Int>){
-viewModelScope.launch {
 
-val selectedPresets = HabitPresets.defaultHabits.filter { selectedIds.contains(it.id) }
+    fun saveSelectedHabit(selectedIds: Set<Int>) {
+        viewModelScope.launch {
 
-selectedPresets.forEach { preset -> val newHabit = Habit(name = preset.title, done = false, xp = 0)
-habitDao.insertHabit(newHabit)
-}
-}
+            val selectedPresets = HabitPresets.defaultHabits.filter { selectedIds.contains(it.id) }
+
+            selectedPresets.forEach { preset ->
+                val newHabit = Habit(name = preset.title, done = false, xp = 0)
+                repository.insertHabit(newHabit)
+            }
+        }
     }
 
 
-    val totalSavedMoney: StateFlow<Int> = habitDao.getTotalSavedMoney()
+    val totalSavedMoney: StateFlow<Int> = repository.totalSavedMoney
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0
         )
+
     fun toogleHabit(id: Int) {
         viewModelScope.launch {
-            habitDao.toggleHabitsCompleted(id)
+            repository.toggleHabitsCompleted(id)
         }
     }
-    fun deleteHabit(id: Int){
+
+    fun deleteHabit(id: Int) {
         viewModelScope.launch {
-            habitDao.deleteHabitById( id  )
+            repository.deleteHabitById(id)
         }
 
     }
-    fun addHabit(name: String){
 
-        if(name.isNotBlank()){
+    fun addHabit(name: String) {
+
+        if (name.isNotBlank()) {
             viewModelScope.launch {
                 val newHabit = Habit(name = name, done = false, xp = 0)
-                habitDao.insertHabit(newHabit)
+                repository.insertHabit(newHabit)
             }
         }
     }
 
     private val _dayCompleted = MutableStateFlow(false)
     val dayCompleted: StateFlow<Boolean> = _dayCompleted.asStateFlow()
-    fun completeDay(){
+    fun completeDay() {
         val allDone = habits.value.all { it.done }
-        val allXp = habits.value.filter { it.done }.sumOf {it.xp}
-        if (allDone && !_dayCompleted.value){
+        val allXp = habits.value.filter { it.done }.sumOf { it.xp }
+        if (allDone && !_dayCompleted.value) {
             _totalXp.value += allXp
             _dayCompleted.value = true
             _streak.value++
@@ -79,20 +84,19 @@ habitDao.insertHabit(newHabit)
         }
     }
 
-    fun startNewDay(){
-if (!_dayCompleted.value){
-    _streak.value = 0
+    fun startNewDay() {
+        if (!_dayCompleted.value) {
+            _streak.value = 0
 
-}
-viewModelScope.launch {
-habitDao.resetAllHabits()
-}
+        }
+        viewModelScope.launch {
+            repository.resetAllHabits()
+        }
         _dayCompleted.value = false
     }
-    private val _streak  = MutableStateFlow(0)
-        val streak: StateFlow<Int> =_streak.asStateFlow()
 
-
+    private val _streak = MutableStateFlow(0)
+    val streak: StateFlow<Int> = _streak.asStateFlow()
 
 
 }

@@ -8,6 +8,7 @@
     import com.example.habbittracker.viewmodel.HabitViewModel
     import com.example.habbittracker.viewmodel.HabitViewModelFactory
     import com.example.habbittracker.data.local.HabitDatabase
+    import com.example.habbittracker.data.repository.HabitRepository
     import com.example.habbittracker.ui.screens.HabitSection
     import com.example.habbittracker.ui.screens.HomeScreen
     import com.example.habbittracker.ui.screens.WelcomeScreen
@@ -33,12 +34,11 @@
     composable("habit_section"){
         val context = LocalContext.current
         val database = HabitDatabase.getDatabase(context)
-        val dao = database.habitDao()
-        val habitViewModel: HabitViewModel = viewModel(
-            factory = HabitViewModelFactory(dao)
-        )
+        val repository = HabitRepository(database.habitDao())
+        val factory = HabitViewModelFactory(repository)
+        val viewModel: HabitViewModel = viewModel(factory = factory)
         HabitSection(
-            viewModel = habitViewModel,
+            viewModel = viewModel,
             onNextClick = {
             navController.navigate("home")
         },
