@@ -1,9 +1,10 @@
-package com.example.habbittracker.data
+package com.example.habbittracker.data.local
 
+import android.content.Context
 import androidx.room.Database
-import androidx.room.Room.databaseBuilder
+import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.habbittracker.model.Habit
+import com.example.habbittracker.data.models.Habit
 
 @Database(entities = [Habit:: class], version = 1)
 abstract class HabitDatabase: RoomDatabase() {
@@ -12,9 +13,9 @@ abstract class HabitDatabase: RoomDatabase() {
     companion object{
         @Volatile
         private  var INSTANCE: HabitDatabase? = null
-        fun getDatabase(context: android.content.Context): HabitDatabase{
+        fun getDatabase(context: Context): HabitDatabase{
             return INSTANCE ?: synchronized(this){
-                val instance = databaseBuilder(
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     HabitDatabase::class.java,
                     "habit_database"
