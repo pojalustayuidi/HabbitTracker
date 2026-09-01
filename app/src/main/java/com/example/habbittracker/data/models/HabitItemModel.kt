@@ -1,4 +1,4 @@
-package com.example.habbittracker.data
+package com.example.habbittracker.data.models
 
 enum class HabitType{
     BAD_HABIT, // ВРЕДНАЯ + savedMoney + XP

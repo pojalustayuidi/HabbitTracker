@@ -1,9 +1,9 @@
-package com.example.habbittracker.data
+package com.example.habbittracker.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.habbittracker.model.Habit
+import com.example.habbittracker.data.models.Habit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,7 +24,7 @@ interface HabitDao {
     suspend fun resetAllHabits()
 
     @Query("SELECT COALESCE(SUM(savedMoney), 0) FROM habits_table WHERE done = 1")
-    fun getTotalSavedMoney() : Flow <Int>
+    fun getTotalSavedMoney() : Flow<Int>
 
 
 

@@ -1,5 +1,8 @@
 package com.example.habbittracker.data
 
+import com.example.habbittracker.data.models.HabitItemModel
+import com.example.habbittracker.data.models.HabitType
+
 object HabitPresets{
     val defaultHabits = listOf<HabitItemModel>(
         HabitItemModel(
@@ -7,13 +10,13 @@ object HabitPresets{
             type = HabitType.BAD_HABIT,
             title = "Сигареты",
             rewardAmount = 1,
-        ) ,
+        ),
         HabitItemModel(
             id = 2,
-        type = HabitType.BAD_HABIT,
-        title = "Энергетики",
-        rewardAmount = 1,
-    ),
+            type = HabitType.BAD_HABIT,
+            title = "Энергетики",
+            rewardAmount = 1,
+        ),
         HabitItemModel(
             id = 3,
             type = HabitType.BAD_HABIT,
