@@ -3,14 +3,12 @@ package com.example.habbittracker.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -24,9 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,24 +53,14 @@ val totalXp by viewModel.totalXp.collectAsState()
     Column(modifier = modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp))
     {
-        Row(
-            verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "CoinHabit",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = HabitGreen
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                {}) {
-                Icon(contentDescription = "Уведомления", imageVector = Icons.Default.AddAlert )
-
-            }
-        }
-
+        Text(
+            text = "CoinHabit",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = HabitGreen
+        )
         GreetingSection(name = "Артём",  modifier = Modifier.padding(bottom = 5.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)  ){
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)  ){
 
             StatCard(
             icon = Icons.Default.LocalFireDepartment,
@@ -98,8 +84,6 @@ val totalXp by viewModel.totalXp.collectAsState()
 
 
         CardLevel(xp = newXp, level = level)
-        SavingCard(amount = 10)
-
         Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
         LazyColumn {
             items(habits, key = { habit -> habit.id }) { habit ->
@@ -113,6 +97,7 @@ val totalXp by viewModel.totalXp.collectAsState()
 
             }
         }
+        SavingCard(amount = 10)
 
         Row {
             TextField(
