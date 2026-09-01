@@ -5,9 +5,9 @@
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
-    import com.example.habbittracker.HabitViewModel
-    import com.example.habbittracker.HabitViewModelFactory
-    import com.example.habbittracker.data.HabitDatabase
+    import com.example.habbittracker.viewmodel.HabitViewModel
+    import com.example.habbittracker.viewmodel.HabitViewModelFactory
+    import com.example.habbittracker.data.local.HabitDatabase
     import com.example.habbittracker.ui.screens.HabitSection
     import com.example.habbittracker.ui.screens.HomeScreen
     import com.example.habbittracker.ui.screens.WelcomeScreen

@@ -1,8 +1,8 @@
-package com.example.habbittracker
+package com.example.habbittracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habbittracker.data.HabitDao
+import com.example.habbittracker.data.local.HabitDao
 
 class HabitViewModelFactory(private val habitDao: HabitDao) : ViewModelProvider.Factory {
 

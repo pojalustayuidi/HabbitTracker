@@ -1,7 +1,8 @@
-package com.example.habbittracker.model
+package com.example.habbittracker.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+
 @Entity(tableName = "habits_table")
 
 data class Habit(
@@ -13,5 +14,3 @@ data class Habit(
     val id: Int = 0
 
 )
-
-
