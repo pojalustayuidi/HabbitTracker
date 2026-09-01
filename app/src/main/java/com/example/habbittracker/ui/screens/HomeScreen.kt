@@ -23,11 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habbittracker.HabitViewModel
+import com.example.habbittracker.HabitViewModelFactory
+import com.example.habbittracker.data.HabitDatabase
 import com.example.habbittracker.ui.components.CardLevel
 import com.example.habbittracker.ui.components.GreetingSection
 import com.example.habbittracker.ui.components.HabitItem
@@ -41,7 +44,10 @@ import com.example.habbittracker.ui.theme.HabitTextPrimary
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HabitViewModel = viewModel()
+    viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(
+        HabitDatabase.getDatabase(LocalContext.current).habitDao()
+    )
+    )
 ) {
     var newHabitName by remember { mutableStateOf("") }
 val totalXp by viewModel.totalXp.collectAsState()
