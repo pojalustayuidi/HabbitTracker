@@ -44,16 +44,15 @@ import com.example.habbittracker.ui.theme.HabitTextPrimary
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HabitViewModel = viewModel(
-        factory = HabitViewModelFactory(HabitDatabase.getDatabase(LocalContext.current).habitDao()
-        )
+    viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(
+        HabitDatabase.getDatabase(LocalContext.current).habitDao()
+    )
     )
 ) {
     var newHabitName by remember { mutableStateOf("") }
 val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
-    val totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
@@ -104,7 +103,7 @@ val totalXp by viewModel.totalXp.collectAsState()
 
             }
         }
-        SavingCard(text = "$totalSavedMoney ")
+        SavingCard(amount = 10)
 
         Row {
             TextField(
