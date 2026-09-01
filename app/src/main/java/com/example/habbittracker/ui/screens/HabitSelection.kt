@@ -1,9 +1,7 @@
 package com.example.habbittracker.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -11,9 +9,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.data.HabitPresets
 import com.example.habbittracker.data.HabitType
+import com.example.habbittracker.ui.components.HabitsCard
 import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitTextPrimary
 
@@ -62,24 +58,18 @@ fun HabitSection(onNextClick: () -> Unit) {
             //Карточки вредных привычек
             items(badHabit){
                 item ->  val isSelected = selectedHabitsIds.contains(item.id)
-                OutlinedCard(
-                    shape = CardDefaults.shape,
-
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) HabitGreen else MaterialTheme.colorScheme.surfaceVariant
-                    ), modifier = Modifier.height(100.dp)
-
-                        .clickable
-
+                HabitsCard(
+                    title = item.title,
+                    isSelected = isSelected,
+                    onClick = {
+                        selectedHabitsIds = if (isSelected){
+                            selectedHabitsIds - item.id
+                        }else
                         {
-                            selectedHabitsIds = if (selectedHabitsIds.contains(item.id)) {
-                                selectedHabitsIds - item.id
-                            } else selectedHabitsIds + item.id
-
-                        }) {
-                    Text(text = item.title)
-
-                }
+                            selectedHabitsIds + item.id
+                        }
+                    }
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -91,26 +81,18 @@ fun HabitSection(onNextClick: () -> Unit) {
             }
 items(goodHabits){
     item ->  val isSelected = selectedHabitsIds.contains(item.id)
-    OutlinedCard(
-        shape = CardDefaults.shape,
-
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) HabitGreen else MaterialTheme.colorScheme.surfaceVariant
-        ), modifier = Modifier.
-        height(100.dp)
-            .fillMaxWidth()
-            .clickable
-
-
+    HabitsCard(
+        title = item.title,
+        isSelected = isSelected,
+        onClick = {
+            selectedHabitsIds = if (isSelected){
+                selectedHabitsIds - item.id
+            }else
             {
-                selectedHabitsIds = if (selectedHabitsIds.contains(item.id)) {
-                    selectedHabitsIds - item.id
-                } else selectedHabitsIds + item.id
-
-            }) {
-        Text(text = item.title)
-
-    }
+                selectedHabitsIds + item.id
+            }
+        }
+    )
 }
 
         }
