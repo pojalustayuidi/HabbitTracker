@@ -2,6 +2,7 @@
         import androidx.lifecycle.ViewModel
         import androidx.lifecycle.viewModelScope
         import com.example.habbittracker.data.HabitDao
+        import com.example.habbittracker.data.HabitPresets
         import com.example.habbittracker.model.Habit
         import kotlinx.coroutines.flow.MutableStateFlow
         import kotlinx.coroutines.flow.SharingStarted
@@ -26,6 +27,17 @@
             fun addBonus(amount: Int){
                 _totalXp.value += amount
             }
+            fun saveSelectedHabit(selectedIds: Set<Int>){
+viewModelScope.launch {
+
+    val selectedPresets = HabitPresets.defaultHabits.filter { selectedIds.contains(it.id) }
+
+    selectedPresets.forEach { preset -> val newHabit = Habit(name =  preset.title, done = false, xp = 0)
+        habitDao.insertHabit(newHabit)
+    }
+}
+            }
+
 
             val totalSavedMoney: StateFlow<Int> = habitDao.getTotalSavedMoney()
                 .stateIn(

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habbittracker.HabitViewModel
 import com.example.habbittracker.data.HabitPresets
 import com.example.habbittracker.data.HabitType
 import com.example.habbittracker.ui.components.HabitsCard
@@ -26,8 +27,10 @@ import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitTextPrimary
 
 @Composable
-fun HabitSection(onNextClick: () -> Unit) {
+fun HabitSection(onNextClick: () -> Unit, viewModel: HabitViewModel) {
+
     var selectedHabitsIds by remember { mutableStateOf(emptySet<Int>()) }
+
     Column {
         Text(
             "Что хочешь изменить?",
@@ -100,7 +103,11 @@ items(goodHabits){
         Button(
             colors = ButtonDefaults.buttonColors(HabitGreen),
             modifier = Modifier.fillMaxWidth(),
-            onClick = onNextClick
+            onClick = {
+                viewModel.saveSelectedHabit(selectedHabitsIds)
+                onNextClick()
+
+            }
 
         ) {
             val buttonText = if (selectedHabitsIds.isEmpty()) {

@@ -1,8 +1,13 @@
     import androidx.compose.runtime.Composable
     import androidx.compose.ui.Modifier
+    import androidx.compose.ui.platform.LocalContext
+    import androidx.lifecycle.viewmodel.compose.viewModel
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
+    import com.example.habbittracker.HabitViewModel
+    import com.example.habbittracker.HabitViewModelFactory
+    import com.example.habbittracker.data.HabitDatabase
     import com.example.habbittracker.ui.screens.HabitSection
     import com.example.habbittracker.ui.screens.HomeScreen
     import com.example.habbittracker.ui.screens.WelcomeScreen
@@ -26,9 +31,18 @@
             }
 
     composable("habit_section"){
-        HabitSection(onNextClick = {
+        val context = LocalContext.current
+        val database = HabitDatabase.getDatabase(context)
+        val dao = database.habitDao()
+        val habitViewModel: HabitViewModel = viewModel(
+            factory = HabitViewModelFactory(dao)
+        )
+        HabitSection(
+            viewModel = habitViewModel,
+            onNextClick = {
             navController.navigate("home")
-        })
+        },
+        )
     }
 
             composable("home") {
