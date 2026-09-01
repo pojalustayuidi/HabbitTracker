@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habbittracker.viewmodel.HabitViewModel
 import com.example.habbittracker.viewmodel.HabitViewModelFactory
 import com.example.habbittracker.data.local.HabitDatabase
+import com.example.habbittracker.data.repository.HabitRepository
 import com.example.habbittracker.ui.components.CardLevel
 import com.example.habbittracker.ui.components.GreetingSection
 import com.example.habbittracker.ui.components.HabitItem
@@ -44,20 +45,23 @@ import com.example.habbittracker.ui.theme.HabitTextPrimary
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(
-        HabitDatabase.getDatabase(LocalContext.current).habitDao()
-    )
+    viewModel: HabitViewModel = viewModel(
+        factory = HabitViewModelFactory(
+            HabitRepository(HabitDatabase.getDatabase(LocalContext.current).habitDao())
+        )
     )
 ) {
     var newHabitName by remember { mutableStateOf("") }
-val totalXp by viewModel.totalXp.collectAsState()
+    val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
-    Column(modifier = modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp))
+    Column(
+        modifier = modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    )
     {
         Text(
             text = "CoinHabit",
@@ -65,15 +69,18 @@ val totalXp by viewModel.totalXp.collectAsState()
             fontWeight = FontWeight.ExtraBold,
             color = HabitGreen
         )
-        GreetingSection(name = "Артём",  modifier = Modifier.padding(bottom = 5.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)  ){
+        GreetingSection(name = "Артём", modifier = Modifier.padding(bottom = 5.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
 
             StatCard(
-            icon = Icons.Default.LocalFireDepartment,
-            iconTint = HabitFire,
-            title = "Текущий стрик",
-            value = streak,
-            subtitle = "дней",
+                icon = Icons.Default.LocalFireDepartment,
+                iconTint = HabitFire,
+                title = "Текущий стрик",
+                value = streak,
+                subtitle = "дней",
                 modifier = Modifier.weight(1f)
 
             )
@@ -86,11 +93,17 @@ val totalXp by viewModel.totalXp.collectAsState()
                 modifier = Modifier.weight(1f)
 
 
-            ) }
+            )
+        }
 
 
         CardLevel(xp = newXp, level = level)
-        Text(text = "Мои привычки", fontSize = 16.sp, color = HabitTextPrimary, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "Мои привычки",
+            fontSize = 16.sp,
+            color = HabitTextPrimary,
+            fontWeight = FontWeight.SemiBold
+        )
         LazyColumn {
             items(habits, key = { habit -> habit.id }) { habit ->
                 HabitItem(habit, onToggle = {
@@ -145,4 +158,5 @@ val totalXp by viewModel.totalXp.collectAsState()
             Text("Начать день")
         }
 
-    }}
+    }
+}

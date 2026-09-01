@@ -2,15 +2,14 @@ package com.example.habbittracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habbittracker.data.local.HabitDao
+import com.example.habbittracker.data.repository.HabitRepository
 
-class HabitViewModelFactory(private val habitDao: HabitDao) : ViewModelProvider.Factory {
-
+class HabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HabitViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HabitViewModel(habitDao) as T
+            return HabitViewModel(repository) as T
         }
-        throw IllegalArgumentException("Неизвестный класс ViewModel")
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
