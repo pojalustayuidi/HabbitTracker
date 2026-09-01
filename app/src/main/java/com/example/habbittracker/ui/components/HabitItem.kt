@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habbittracker.model.Habit
+import com.example.habbittracker.data.models.Habit
 import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitGreenLight
 import com.example.habbittracker.ui.theme.HabitTextSecondary
