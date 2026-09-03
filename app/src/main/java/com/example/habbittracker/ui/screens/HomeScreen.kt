@@ -98,7 +98,7 @@
             LazyColumn {
                 items(habits, key = { habit -> habit.id }) { habit ->
                     HabitItem(habit, onToggle = {
-                        viewModel.toogleHabit(habit.id)
+                        viewModel.toggleHabit(habit.id)
 
                     }, onDelete = {
                         viewModel.deleteHabit(habit.id)

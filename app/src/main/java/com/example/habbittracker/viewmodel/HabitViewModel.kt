@@ -59,8 +59,9 @@ private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
             initialValue = 0
         )
 
-    fun toogleHabit(id: Int) {
+    fun toggleHabit(id: Int) {
         viewModelScope.launch {
+            repository.toggleHabitsCompleted(id)
             repository.toggleHabitsCompleted(id)
         }
     }
