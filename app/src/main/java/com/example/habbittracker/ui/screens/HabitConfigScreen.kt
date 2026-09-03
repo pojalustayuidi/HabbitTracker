@@ -60,7 +60,9 @@ fun HabitConfigScreen(
         if (badHabitsToConfigure.isNotEmpty()) {
 
             val currentHabit = badHabitsToConfigure[currentIndex]
-
+            val costString = costs[currentHabit.id] ?: "0"
+            val amount = costString.toDoubleOrNull() ?: 0.0
+            val calculateValue = kotlin.math.ceil(amount /30.0  ).toInt()
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End){
@@ -69,14 +71,14 @@ fun HabitConfigScreen(
 
             Text(text = currentHabit.title, fontSize = 48.sp, fontWeight = FontWeight.SemiBold)
 
-            Text(text = "Сколько ты обычно тратишь на это в месяц?", fontSize = 24.sp)
+            Text(text = "Сколько ты обычно тратишь на это в месяц?₽", fontSize = 24.sp)
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = HabitGreen),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                placeholder = { Text("Введите сумму") },
+                placeholder = { Text("Введите сумму ₽") },
                 suffix = {
                     IconButton(onClick = {costs = costs - currentHabit.id}) {
                         Icon(
@@ -87,6 +89,8 @@ fun HabitConfigScreen(
                 },
                 value = costs[currentHabit.id] ?: "",
                 onValueChange = { newValue -> costs = costs + (currentHabit.id to newValue) })
+
+            Text(text = "= $calculateValue ₽ в день", fontSize = 24.sp)
             Spacer(modifier = Modifier.weight(0.85f))
             Button(
                 shape = ButtonDefaults.shape,
@@ -96,6 +100,7 @@ fun HabitConfigScreen(
                     if (currentIndex < badHabitsToConfigure.size - 1) {
                         currentIndex++
                     } else {
+                        viewModel.saveConfiguredHabits(costs)
                         onFinishClick()
                     }
                 }
