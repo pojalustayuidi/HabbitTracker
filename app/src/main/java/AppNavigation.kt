@@ -52,7 +52,7 @@
             }
 
             composable("home") {
-                HomeScreen()
+                HomeScreen(viewModel = sharedViewModel)
             }
 
 
