@@ -39,15 +39,18 @@ private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
         _totalXp.value += amount
     }
 
-    fun saveSelectedHabit(selectedIds: Set<Int>) {
+    fun saveConfiguredHabits(coast: Map<Int, String>) {
         viewModelScope.launch {
+             coast.forEach { (id, costString) -> val preset = HabitPresets.defaultHabits.find {it.id == id}
 
-            val selectedPresets = HabitPresets.defaultHabits.filter { selectedIds.contains(it.id) }
+                if (preset != null){
+                    val savedMoney = costString.toIntOrNull() ?: 0
+                    val newHabit = Habit(name = preset.title, done = false, xp = 0, savedMoney = savedMoney)
+                    repository.insertHabit(newHabit)
 
-            selectedPresets.forEach { preset ->
-                val newHabit = Habit(name = preset.title, done = false, xp = 0)
-                repository.insertHabit(newHabit)
+                }
             }
+
         }
     }
 
