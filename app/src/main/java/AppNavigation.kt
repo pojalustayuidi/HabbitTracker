@@ -47,12 +47,16 @@
             composable("habit_config") {
                 HabitConfigScreen(
                     viewModel = sharedViewModel,
-                    onFinishClick = {}
+                    onFinishClick = {
+                        navController.navigate("home") {
+                            popUpTo("welcome") { inclusive = true }
+                        }
+                    }
                 )
             }
 
             composable("home") {
-                HomeScreen()
+                HomeScreen(viewModel = sharedViewModel)
             }
 
 

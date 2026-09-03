@@ -16,10 +16,10 @@ abstract class HabitDatabase: RoomDatabase() {
         fun getDatabase(context: Context): HabitDatabase{
             return INSTANCE ?: synchronized(this){
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    HabitDatabase::class.java,
-                    "habit_database"
-                ).fallbackToDestructiveMigration()
+                                context.applicationContext,
+                                HabitDatabase::class.java,
+                                "habit_database"
+                            ).fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 instance

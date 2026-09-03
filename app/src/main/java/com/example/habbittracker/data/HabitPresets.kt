@@ -4,7 +4,7 @@ import com.example.habbittracker.data.models.HabitItemModel
 import com.example.habbittracker.data.models.HabitType
 
 object HabitPresets{
-    val defaultHabits = listOf<HabitItemModel>(
+    val defaultHabits = listOf(
         HabitItemModel(
             id = 1,
             type = HabitType.BAD_HABIT,

@@ -40,7 +40,7 @@ onClick: () -> Unit
             verticalArrangement = Arrangement.Center
 
         ){
-            Text(title, )
+            Text(title)
         }
 
     }
