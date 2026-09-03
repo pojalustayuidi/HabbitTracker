@@ -21,7 +21,7 @@ class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
     )
 private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
     val selectedHabitsIds: StateFlow<Set<Int>> = _selectedHabitsIds.asStateFlow()
-    fun toogleHabitSelection(id: Int){
+    fun toggleHabitSelection(id: Int){
       val currentSet =  selectedHabitsIds.value
         _selectedHabitsIds.value = if (currentSet.contains(id)){
              currentSet -  id

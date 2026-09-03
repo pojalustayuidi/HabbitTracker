@@ -9,6 +9,7 @@
     import com.example.habbittracker.viewmodel.HabitViewModelFactory
     import com.example.habbittracker.data.local.HabitDatabase
     import com.example.habbittracker.data.repository.HabitRepository
+    import com.example.habbittracker.ui.screens.HabitConfigScreen
     import com.example.habbittracker.ui.screens.HabitSection
     import com.example.habbittracker.ui.screens.HomeScreen
     import com.example.habbittracker.ui.screens.WelcomeScreen
@@ -16,7 +17,11 @@
     @Composable
     fun CoinHabitApp(modifier: Modifier = Modifier) {
         val navController = rememberNavController()
-
+        val context = LocalContext.current
+        val database = HabitDatabase.getDatabase(context)
+        val repository = HabitRepository(database.habitDao())
+        val factory = HabitViewModelFactory(repository)
+        val sharedViewModel: HabitViewModel = viewModel(factory = factory)
         NavHost(
             navController = navController,
             startDestination = "welcome",
@@ -32,18 +37,19 @@
             }
 
     composable("habit_section"){
-        val context = LocalContext.current
-        val database = HabitDatabase.getDatabase(context)
-        val repository = HabitRepository(database.habitDao())
-        val factory = HabitViewModelFactory(repository)
-        val viewModel: HabitViewModel = viewModel(factory = factory)
         HabitSection(
-            viewModel = viewModel,
+            viewModel = sharedViewModel,
             onNextClick = {
-            navController.navigate("home")
+            navController.navigate("habit_config")
         },
         )
     }
+            composable("habit_config") {
+                HabitConfigScreen(
+                    viewModel = sharedViewModel,
+                    onFinishClick = {}
+                )
+            }
 
             composable("home") {
                 HomeScreen()

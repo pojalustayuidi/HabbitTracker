@@ -11,10 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,9 +25,7 @@ import com.example.habbittracker.ui.theme.HabitTextPrimary
 
 @Composable
 fun HabitSection(onNextClick: () -> Unit, viewModel: HabitViewModel) {
-
-    var selectedHabitsIds by remember { mutableStateOf(emptySet<Int>()) }
-
+    val selectedHabits = viewModel.selectedHabitsIds.collectAsState().value
     Column {
         Text(
             "Что хочешь изменить?",
@@ -60,17 +55,12 @@ fun HabitSection(onNextClick: () -> Unit, viewModel: HabitViewModel) {
             }
             //Карточки вредных привычек
             items(badHabit){
-                item ->  val isSelected = selectedHabitsIds.contains(item.id)
+                item ->  val isSelected = selectedHabits.contains(item.id)
                 HabitsCard(
                     title = item.title,
                     isSelected = isSelected,
                     onClick = {
-                        selectedHabitsIds = if (isSelected){
-                            selectedHabitsIds - item.id
-                        }else
-                        {
-                            selectedHabitsIds + item.id
-                        }
+                   viewModel.toggleHabitSelection(item.id)
                     }
                 )
             }
@@ -83,17 +73,12 @@ fun HabitSection(onNextClick: () -> Unit, viewModel: HabitViewModel) {
                 )
             }
 items(goodHabits){
-    item ->  val isSelected = selectedHabitsIds.contains(item.id)
+    item ->  val isSelected = selectedHabits.contains(item.id)
     HabitsCard(
         title = item.title,
         isSelected = isSelected,
         onClick = {
-            selectedHabitsIds = if (isSelected){
-                selectedHabitsIds - item.id
-            }else
-            {
-                selectedHabitsIds + item.id
-            }
+            viewModel.toggleHabitSelection(item.id)
         }
     )
 }
@@ -104,16 +89,16 @@ items(goodHabits){
             colors = ButtonDefaults.buttonColors(HabitGreen),
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                viewModel.saveSelectedHabit(selectedHabitsIds)
+//                viewModel.saveSelectedHabit(selectedHabits)
                 onNextClick()
 
             }
 
         ) {
-            val buttonText = if (selectedHabitsIds.isEmpty()) {
+            val buttonText = if (selectedHabits.isEmpty()) {
                 "Продолжить"
             } else {
-                "Начать (${selectedHabitsIds.size})"
+                "Начать (${selectedHabits.size})"
             }
 
             Text(text = buttonText)
