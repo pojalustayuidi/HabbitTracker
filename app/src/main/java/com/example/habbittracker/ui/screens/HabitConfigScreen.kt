@@ -90,7 +90,7 @@ fun HabitConfigScreen(
             Spacer(modifier = Modifier.weight(0.85f))
             Button(
                 shape = ButtonDefaults.shape,
-                colors = ButtonDefaults.buttonColors(containerColor = HabitGreen, ),
+                colors = ButtonDefaults.buttonColors(containerColor = HabitGreen),
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     if (currentIndex < badHabitsToConfigure.size - 1) {
@@ -111,7 +111,9 @@ fun HabitConfigScreen(
         } else {
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onFinishClick
+                onClick = {
+                    viewModel.saveConfiguredHabits(costs)
+                    onFinishClick()}
             ) {
                 Text("Готово")
             }
