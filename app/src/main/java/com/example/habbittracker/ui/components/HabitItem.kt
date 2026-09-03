@@ -15,12 +15,18 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,17 +42,19 @@ import com.example.habbittracker.ui.theme.HabitGreenLight
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
+fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
     OutlinedCard(
         modifier = Modifier.padding(vertical = 8.dp)
 
     ) {
-        Column(modifier = Modifier.padding(
-            vertical = 12.dp
-        )) {
+        Column(
+            modifier = Modifier.padding(
+                vertical = 12.dp
+            )
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                //                    horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()
@@ -86,9 +94,9 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
                 IconButton(onClick = onToggle) {
                     Icon(
                         imageVector = if (habit.done) {
-                            Icons.Rounded.CheckCircle // Заполненный закругленный круг с галочкой
+                            Icons.Rounded.CheckCircle
                         } else {
-                            Icons.Rounded.RadioButtonUnchecked // Пустой аккуратный контур
+                            Icons.Rounded.RadioButtonUnchecked
                         },
                         contentDescription = "Отметить привычку",
                         tint = if (habit.done) HabitGreen else HabitTextSecondary,
@@ -97,12 +105,38 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
                 }
 
 
-                IconButton(
-                    onClick = {
-                        //будет редактириование
-                    },
-                )
-                {      Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Удалить привычку")
+                Box {
+                    IconButton(
+                        onClick = {
+                            expanded = true
+                        },
+                    )
+                    {
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Редактировать") },
+                                onClick = { expanded = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Отметить срыв") },
+                                onClick = { expanded = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Удалить привычку") },
+                                onClick = {
+                                    expanded = false
+                                    onDelete()
+                                }
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Удалить привычку"
+                        )
+                    }
                 }
 
             }
@@ -118,7 +152,8 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit){
                 strokeCap = StrokeCap.Round,
                 drawStopIndicator = {},
                 gapSize = 0.dp
-            ) }
+            )
+        }
 
     }
 
