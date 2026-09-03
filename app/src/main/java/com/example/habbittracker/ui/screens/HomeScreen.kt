@@ -12,19 +12,18 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.viewmodel.HabitViewModel
@@ -42,131 +41,107 @@ import com.example.habbittracker.ui.theme.HabitTextSecondary
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HabitViewModel
+    viewModel: HabitViewModel,
+    onAddHabitClick: () -> Unit
 ) {
-    var newHabitName by remember { mutableStateOf("") }
     val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
 
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    )
-    {
-        Text(
-            text = "CoinHabit",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = HabitGreen
-        )
-        GreetingSection(name = "Артём", modifier = Modifier.padding(bottom = 5.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-
-            StatCard(
-                icon = Icons.Default.LocalFireDepartment,
-                iconTint = HabitFire,
-                title = "Текущий стрик",
-                value = streak,
-                subtitle = "дней",
-                modifier = Modifier.weight(1f)
-
-            )
-            StatCard(
-                icon = Icons.Default.Star,
-                iconTint = HabitAccent,
-                title = "Монеты",
-                value = totalXp,
-                subtitle = "+12 сегодня",
-                modifier = Modifier.weight(1f)
-
-
-            )
-        }
-
-
-        CardLevel(xp = newXp, level = level)
-        Text(
-            text = "Мои привычки",
-            fontSize = 16.sp,
-            color = HabitTextPrimary,
-            fontWeight = FontWeight.SemiBold
-        )
-        if (habits.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "У вас пока нет активных привычек, добавьте новую",
-                    color = HabitTextSecondary,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-
-                )
-            }
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(habits, key = { habit -> habit.id }) { habit ->
-                    HabitItem(habit, onToggle = {
-                        viewModel.toggleHabit(habit.id)
-
-                    }, onDelete = {
-                        viewModel.deleteHabit(habit.id)
-                    }
-                    )
-
-                }
-            }
-        }
-        SavingCard(amount = 10)
-
-        Row {
-            TextField(
-                label = { Text("Новая привычка") },
-                onValueChange = { newValue -> newHabitName = newValue }, value = newHabitName
-            )
-            IconButton(
-
-                onClick
-                = {
-                    viewModel.addHabit(newHabitName)
-                    newHabitName = ""
-
-
-                }
-
+    // Оборачиваем весь экран в Scaffold
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddHabitClick, // Вызываем переданную функцию
+                containerColor = HabitGreen
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Добавить привычку"
+                    contentDescription = "Добавить",
+                    tint = Color.White
                 )
             }
         }
-
-
-        Button(
-            onClick = {
-                viewModel.completeDay()
-
-            }
+    ) { paddingValues ->
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Завершить д,ень")
-        }
-        Button(
-            onClick = {
-                viewModel.startNewDay()
-            }
-        ) {
-            Text("Начать день")
-        }
 
+            Text(
+                text = "CoinHabit",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = HabitGreen
+            )
+
+            GreetingSection(name = "Артём", modifier = Modifier.padding(bottom = 5.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                StatCard(
+                    icon = Icons.Default.LocalFireDepartment,
+                    iconTint = HabitFire,
+                    title = "Текущий стрик",
+                    value = streak,
+                    subtitle = "дней",
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    icon = Icons.Default.Star,
+                    iconTint = HabitAccent,
+                    title = "Монеты",
+                    value = totalXp,
+                    subtitle = "+12 сегодня",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            CardLevel(xp = newXp, level = level)
+            SavingCard(amount = 10)
+
+            Text(
+                text = "Мои привычки",
+                fontSize = 16.sp,
+                color = HabitTextPrimary,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            if (habits.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "У вас пока нет активных привычек. Добавьте новую, нажав на плюс.",
+                        color = HabitTextSecondary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(habits, key = { habit -> habit.id }) { habit ->
+                        HabitItem(
+                            habit = habit,
+                            onToggle = { viewModel.toggleHabit(habit.id) },
+                            onDelete = { viewModel.deleteHabit(habit.id) }
+                        )
+                    }
+                }
+            }
+
+
+
+        }
     }
 }
