@@ -8,7 +8,7 @@ class HabitRepository (private val habitDao: HabitDao){
     val allHabits: Flow<List<Habit>> = habitDao.getAllHabits()
     val totalSavedMoney: Flow<Int> = habitDao.getTotalSavedMoney()
 
-    suspend fun insertHabit(habit: Habit){habitDao.insertHabit(habit) }
+        suspend fun insertHabit(habit: Habit){habitDao.insertHabit(habit) }
 
     suspend fun toggleHabitsCompleted(id: Int){
         habitDao.toggleHabitsCompleted(id)
