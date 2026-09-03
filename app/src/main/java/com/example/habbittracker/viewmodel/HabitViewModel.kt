@@ -19,6 +19,17 @@ class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
+private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedHabitsIds: StateFlow<Set<Int>> = _selectedHabitsIds.asStateFlow()
+    fun toogleHabitSelection(id: Int){
+      val currentSet =  selectedHabitsIds.value
+        _selectedHabitsIds.value = if (currentSet.contains(id)){
+             currentSet -  id
+        }else {
+            currentSet + id
+        }
+
+    }
 
 
     private val _totalXp = MutableStateFlow(0)
