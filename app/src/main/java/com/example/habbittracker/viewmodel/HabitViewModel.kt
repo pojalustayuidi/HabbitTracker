@@ -65,7 +65,7 @@ viewModelScope.launch {
 
                 if (preset != null){
                     val savedMoney = costString.toIntOrNull() ?: 0
-                    val newHabit = Habit(name = preset.title, done = false, xp = 0, savedMoney = savedMoney)
+                    val newHabit = Habit(name = preset.title, done = false, xp = 0, savedMoney = savedMoney, habitStartTime = System.currentTimeMillis())
                     repository.insertHabit(newHabit)
 
                 }
@@ -99,7 +99,7 @@ viewModelScope.launch {
 
         if (name.isNotBlank()) {
             viewModelScope.launch {
-                val newHabit = Habit(name = name, done = false, xp = 0)
+                val newHabit = Habit(name = name, done = false, xp = 0, habitStartTime = System.currentTimeMillis())
                 repository.insertHabit(newHabit)
             }
         }
