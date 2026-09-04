@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,12 +44,20 @@ fun HomeScreen(
     viewModel: HabitViewModel,
     onAddHabitClick: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.startTimeTracking()
+    }
+    LaunchedEffect(Unit) {
+        viewModel.startTicking()
+    }
     val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
+    val currentTime by viewModel.currentTime.collectAsState()
    val  totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
+    val hoursPassed by viewModel.hoursPassed.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -128,9 +137,13 @@ fun HomeScreen(
                 }
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
+
                     items(habits, key = { habit -> habit.id }) { habit ->
+                        val elapsedSeconds = (currentTime - habit.habitStartTime) / 1000
+
                         HabitItem(
                             habit = habit,
+                            value = elapsedSeconds.toInt(),
                             onToggle = { viewModel.toggleHabit(habit.id) },
                             onDelete = { viewModel.deleteHabit(habit.id) }
                         )

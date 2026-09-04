@@ -8,6 +8,7 @@
     import com.example.habbittracker.viewmodel.HabitViewModel
     import com.example.habbittracker.viewmodel.HabitViewModelFactory
     import com.example.habbittracker.data.local.HabitDatabase
+    import com.example.habbittracker.data.local.SharedPrefsHelper
     import com.example.habbittracker.data.repository.HabitRepository
     import com.example.habbittracker.ui.screens.HabitConfigScreen
     import com.example.habbittracker.ui.screens.HabitSection
@@ -19,7 +20,8 @@
         val navController = rememberNavController()
         val context = LocalContext.current
         val database = HabitDatabase.getDatabase(context)
-        val repository = HabitRepository(database.habitDao())
+        val prefsHelper = SharedPrefsHelper(context)
+        val repository = HabitRepository(database.habitDao(), prefsHelper)
         val factory = HabitViewModelFactory(repository)
         val sharedViewModel: HabitViewModel = viewModel(factory = factory)
         NavHost(
