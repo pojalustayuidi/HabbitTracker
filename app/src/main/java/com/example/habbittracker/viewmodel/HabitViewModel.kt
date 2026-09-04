@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.habbittracker.data.HabitPresets
 import com.example.habbittracker.data.models.Habit
 import com.example.habbittracker.data.repository.HabitRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
 
@@ -59,6 +61,18 @@ viewModelScope.launch {
         _totalXp.value += amount
     }
 
+
+    private val _currentTime = MutableStateFlow(System.currentTimeMillis())
+    val currentTime: StateFlow<Long> = _currentTime.asStateFlow()
+
+    fun startTicking() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000.milliseconds)
+                _currentTime.value = System.currentTimeMillis()
+            }
+        }
+    }
     fun saveConfiguredHabits(coast: Map<Int, String>) {
         viewModelScope.launch {
              coast.forEach { (id, costString) -> val preset = HabitPresets.defaultHabits.find {it.id == id}
