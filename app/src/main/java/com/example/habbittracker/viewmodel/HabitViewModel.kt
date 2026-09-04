@@ -47,6 +47,14 @@ viewModelScope.launch {
     }
 }
     }
+
+    fun startTimeTracking(){
+        if (repository.getStartTime() == 0L){
+            repository.saveStartTime(System.currentTimeMillis())
+            calculateHoursPassed()
+        }
+    }
+
     fun addBonus(amount: Int) {
         _totalXp.value += amount
     }
