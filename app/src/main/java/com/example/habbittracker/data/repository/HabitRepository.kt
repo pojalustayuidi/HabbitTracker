@@ -27,4 +27,8 @@ class HabitRepository (private val habitDao: HabitDao, private val prefsHelper: 
        return prefsHelper.getStartTime()
     }
 
+
+    suspend fun updateStartTime(id: Int, time: Long){
+        habitDao.updateStartTime(id, time)
+    }
 }
