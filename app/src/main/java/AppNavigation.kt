@@ -56,7 +56,9 @@
             }
 
             composable("home") {
-                HomeScreen(viewModel = sharedViewModel)
+                HomeScreen(viewModel = sharedViewModel, onAddHabitClick = {navController.navigate("habit_section") {
+                    popUpTo("welcome") { inclusive = true }
+                }})
             }
 
 
