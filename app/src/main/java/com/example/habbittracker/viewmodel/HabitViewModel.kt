@@ -35,6 +35,18 @@ private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
     private val _totalXp = MutableStateFlow(0)
     val totalXp: StateFlow<Int> = _totalXp.asStateFlow()
 
+    private val _hoursPassed = MutableStateFlow(0L)
+    val hoursPassed: StateFlow<Long> = _hoursPassed.asStateFlow()
+    fun calculateHoursPassed(){
+viewModelScope.launch {
+    if(repository.getStartTime() == 0L)
+    {
+        _hoursPassed.value = 0L
+    }else {
+       _hoursPassed.value = (System.currentTimeMillis() - repository.getStartTime()) / (1000*60*60)
+    }
+}
+    }
     fun addBonus(amount: Int) {
         _totalXp.value += amount
     }
