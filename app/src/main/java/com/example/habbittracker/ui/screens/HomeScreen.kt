@@ -47,11 +47,15 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.startTimeTracking()
     }
+    LaunchedEffect(Unit) {
+        viewModel.startTicking()
+    }
     val totalXp by viewModel.totalXp.collectAsState()
     val streak by viewModel.streak.collectAsState()
     val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
+    val currentTime by viewModel.currentTime.collectAsState()
    val  totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     val hoursPassed by viewModel.hoursPassed.collectAsState()
     Scaffold(
@@ -133,10 +137,13 @@ fun HomeScreen(
                 }
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
+
                     items(habits, key = { habit -> habit.id }) { habit ->
+                        val elapsedSeconds = (currentTime - habit.habitStartTime) / 1000
+
                         HabitItem(
                             habit = habit,
-                            value = hoursPassed.toInt(),
+                            value = elapsedSeconds.toInt(),
                             onToggle = { viewModel.toggleHabit(habit.id) },
                             onDelete = { viewModel.deleteHabit(habit.id) }
                         )
