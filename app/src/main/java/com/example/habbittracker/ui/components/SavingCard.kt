@@ -28,4 +28,3 @@ fun SavingCard(amount: Int, modifier: Modifier = Modifier){
     }
 
 }
-//

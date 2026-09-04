@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -49,12 +48,11 @@ fun HomeScreen(
     val habits by viewModel.habits.collectAsState()
     val level = totalXp / 1000
     val newXp = totalXp % 1000
-
-    // Оборачиваем весь экран в Scaffold
+   val  totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddHabitClick, // Вызываем переданную функцию
+                onClick = onAddHabitClick,
                 containerColor = HabitGreen
             ) {
                 Icon(
@@ -105,7 +103,7 @@ fun HomeScreen(
             }
 
             CardLevel(xp = newXp, level = level)
-            SavingCard(amount = 10)
+            SavingCard(amount = totalSavedMoney)
 
             Text(
                 text = "Мои привычки",
