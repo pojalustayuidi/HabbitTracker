@@ -43,7 +43,7 @@ viewModelScope.launch {
     {
         _hoursPassed.value = 0L
     }else {
-       _hoursPassed.value = (System.currentTimeMillis() - repository.getStartTime()) / (1000*60*60)
+       _hoursPassed.value = (System.currentTimeMillis() - repository.getStartTime()) /  1000
     }
 }
     }
@@ -84,7 +84,6 @@ viewModelScope.launch {
 
     fun toggleHabit(id: Int) {
         viewModelScope.launch {
-            repository.toggleHabitsCompleted(id)
             repository.toggleHabitsCompleted(id)
         }
     }

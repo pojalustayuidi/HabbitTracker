@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.ui.theme.HabitBorder
 import com.example.habbittracker.ui.theme.HabitSurface
+import com.example.habbittracker.ui.theme.HabitTextPrimary
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
@@ -68,6 +69,7 @@ OutlinedCard (modifier = modifier,
             Text(title, color = HabitTextSecondary, fontSize = 12.sp, maxLines = 1 )
             Text(value.toString(), fontWeight = FontWeight.Bold)
             Text(subtitle, color = HabitTextSecondary)
+
         }
     }
 }

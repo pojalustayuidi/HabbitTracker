@@ -42,7 +42,7 @@ import com.example.habbittracker.ui.theme.HabitGreenLight
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit) {
+fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: Int) {
     var expanded by remember { mutableStateOf(false) }
     OutlinedCard(
         modifier = Modifier.padding(vertical = 8.dp)
@@ -140,6 +140,7 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit) {
                 }
 
             }
+            Text(text = value.toString())
             LinearProgressIndicator(
                 progress = { 0.7f },
                 modifier = Modifier
