@@ -80,7 +80,7 @@
                         val elapsed = (currentTime.value - habit.habitStartTime) / 1000
 elapsed >= 86400 && !habit.done
                     }
-                    expiredHabits.forEach {habit -> repository.habitAsDone(habit.id ) }
+                    expiredHabits.forEach {habit -> repository.habitAsDone(habit.id, _currentTime.value ) }
 
                 }
             }

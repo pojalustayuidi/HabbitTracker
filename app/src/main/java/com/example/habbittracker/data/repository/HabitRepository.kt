@@ -34,8 +34,8 @@ class HabitRepository (private val habitDao: HabitDao, private val prefsHelper: 
       return   prefsHelper.isOnboardingCompleted()
     }
 
-    suspend fun habitAsDone(id: Int){
-        habitDao.habitAsDone(id = id)
+    suspend fun habitAsDone(id: Int, time: Long){
+        habitDao.habitAsDone(id = id, time = time )
     }
     suspend fun updateStartTime(id: Int, time: Long){
         habitDao.updateStartTime(id, time)
