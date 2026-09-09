@@ -11,6 +11,7 @@ data class Habit(
     val done: Boolean,
     val savedMoney: Int = 0,
     val habitStartTime: Long = 0L,
+    val completedAtTime: Long = 0L,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 
