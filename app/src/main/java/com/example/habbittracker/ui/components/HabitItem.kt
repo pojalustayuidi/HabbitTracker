@@ -43,7 +43,7 @@ import com.example.habbittracker.ui.theme.HabitGreenLight
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: Int) {
+fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: Int,  savedMoneyToday: Int) {
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -91,7 +91,7 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
                             modifier = Modifier.alpha(0.5f),
                             textDecoration = TextDecoration.LineThrough
                         )
-                        Text(text = "+${habit.xp} XP", color = HabitGreen, fontSize = 12.sp)
+                        Text(text = "+$savedMoneyToday", color = HabitGreen, fontSize = 12.sp)
                     }
                 }
                 IconButton(onClick = onToggle) {

@@ -13,7 +13,7 @@ import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitTextPrimary
 
 @Composable
-fun SavingCard(amount: Int, modifier: Modifier = Modifier){
+fun SavingCard(amount: Int, modifier: Modifier = Modifier, savedMoneyToday: Int){
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors(containerColor =HabitGreen)
@@ -23,7 +23,7 @@ fun SavingCard(amount: Int, modifier: Modifier = Modifier){
             Text("Сэкономлено всего", color = HabitTextPrimary)
             Text("$amount ₽", fontWeight = FontWeight.ExtraBold, fontSize = 32.sp
             )
-            Text("+ 78   Сегодня")
+        Text("+$savedMoneyToday Сегодня")
         }
     }
 

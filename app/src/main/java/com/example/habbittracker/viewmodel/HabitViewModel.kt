@@ -82,7 +82,7 @@
                     delay(1000.milliseconds)
                     val expiredHabits = habits.value.filter {habit ->
                         val elapsed = (currentTime.value - habit.habitStartTime) / 1000
-elapsed >= 86400 && !habit.done
+elapsed >= 10 && !habit.done // test
                     }
                     expiredHabits.forEach {habit -> repository.habitAsDone(habit.id, _currentTime.value ) }
 
