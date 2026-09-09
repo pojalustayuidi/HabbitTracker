@@ -26,7 +26,7 @@
         val sharedViewModel: HabitViewModel = viewModel(factory = factory)
         NavHost(
             navController = navController,
-            startDestination = "welcome",
+            startDestination = if (sharedViewModel.isOnboardingCompleted()) "home" else "welcome",
             modifier = modifier
         ) {
 
@@ -50,6 +50,7 @@
                 HabitConfigScreen(
                     viewModel = sharedViewModel,
                     onFinishClick = {
+                        sharedViewModel.completeOnboarding()
                         navController.navigate("home") {
                             popUpTo("welcome") { inclusive = true }
                         }
