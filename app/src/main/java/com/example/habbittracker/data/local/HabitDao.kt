@@ -32,4 +32,7 @@ interface HabitDao {
     @Query("UPDATE habits_table SET done = 1, completedAtTime = :time WHERE id = :id")
     suspend fun habitAsDone(id: Int, time: Long)
 
+
+    @Query("SELECT COALESCE(SUM(savedMoney), 0) FROM habits_table  WHERE done = 1 AND completedAtTime >= :sinceTime ")
+    fun totalSavedDayAgo(sinceTime: Long):   Flow<Int>
 }
