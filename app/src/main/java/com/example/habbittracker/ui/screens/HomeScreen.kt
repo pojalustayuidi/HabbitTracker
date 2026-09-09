@@ -58,6 +58,8 @@ fun HomeScreen(
     val currentTime by viewModel.currentTime.collectAsState()
    val  totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     val hoursPassed by viewModel.hoursPassed.collectAsState()
+
+    val savedMoneyToday by viewModel.todaySavedMoney.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -112,7 +114,7 @@ fun HomeScreen(
             }
 
             CardLevel(xp = newXp, level = level)
-            SavingCard(amount = totalSavedMoney)
+            SavingCard(amount = totalSavedMoney, savedMoneyToday = savedMoneyToday)
 
             Text(
                 text = "Мои привычки",
@@ -139,13 +141,18 @@ fun HomeScreen(
                 LazyColumn(modifier = Modifier.weight(1f)) {
 
                     items(habits, key = { habit -> habit.id }) { habit ->
+                        val habitEarnedToday = if ((currentTime - habit.completedAtTime) < 86400000) habit.savedMoney else 0
                         val elapsedSeconds = (currentTime - habit.habitStartTime) / 1000
 
                         HabitItem(
+
                             habit = habit,
                             value = elapsedSeconds.toInt(),
                             onToggle = { viewModel.toggleHabit(habit.id) },
-                            onDelete = { viewModel.deleteHabit(habit.id) }
+                            onDelete = { viewModel.deleteHabit(habit.id) },
+                            savedMoneyToday = habitEarnedToday,
+                            savedMoneyTotal = habit.totalEarned
+
                         )
                     }
                 }
