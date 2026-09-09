@@ -13,6 +13,7 @@ data class Habit(
     val habitStartTime: Long = 0L,
     val completedAtTime: Long = 0L,
     val totalEarned: Int = 0,
+    val daysCompleted: Int = 0,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 

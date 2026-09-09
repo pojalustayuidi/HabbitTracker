@@ -58,6 +58,7 @@ fun HomeScreen(
     val currentTime by viewModel.currentTime.collectAsState()
    val  totalSavedMoney by viewModel.totalSavedMoney.collectAsState()
     val hoursPassed by viewModel.hoursPassed.collectAsState()
+
     val savedMoneyToday by viewModel.todaySavedMoney.collectAsState()
     Scaffold(
         floatingActionButton = {
@@ -140,14 +141,18 @@ fun HomeScreen(
                 LazyColumn(modifier = Modifier.weight(1f)) {
 
                     items(habits, key = { habit -> habit.id }) { habit ->
+                        val habitEarnedToday = if ((currentTime - habit.completedAtTime) < 86400000) habit.savedMoney else 0
                         val elapsedSeconds = (currentTime - habit.habitStartTime) / 1000
 
                         HabitItem(
+
                             habit = habit,
                             value = elapsedSeconds.toInt(),
                             onToggle = { viewModel.toggleHabit(habit.id) },
                             onDelete = { viewModel.deleteHabit(habit.id) },
-                            savedMoneyToday = savedMoneyToday
+                            savedMoneyToday = habitEarnedToday,
+                            savedMoneyTotal = habit.totalEarned
+
                         )
                     }
                 }
