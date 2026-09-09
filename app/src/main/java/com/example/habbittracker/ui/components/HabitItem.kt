@@ -84,9 +84,7 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
                             text = habit.name,
                         )
                         Text(text = "+$savedMoneyToday/$savedMoneyTotal ", color = HabitGreen, fontSize = 12.sp)
-                        Text(text = "День ${habit.daysCompleted + 1}", color = HabitTextSecondary, fontSize = 12.sp)
-
-
+                        Text(text = "День ${habit.daysCompleted + 1}, ${formatElapsedTime(value)}", color = HabitTextSecondary, fontSize = 16.sp)
                     }
                 IconButton(onClick = onToggle) {
                     Icon(
@@ -137,7 +135,6 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
                 }
 
             }
-            Text(text = formatElapsedTime(value))
             LinearProgressIndicator(
                 progress = { 0.7f },
                 modifier = Modifier
