@@ -10,6 +10,7 @@
     import kotlinx.coroutines.flow.SharingStarted
     import kotlinx.coroutines.flow.StateFlow
     import kotlinx.coroutines.flow.asStateFlow
+    import kotlinx.coroutines.flow.first
     import kotlinx.coroutines.flow.stateIn
     import kotlinx.coroutines.launch
     import kotlin.time.Duration.Companion.milliseconds
@@ -74,8 +75,11 @@
         fun startTicking() {
             viewModelScope.launch {
                 while (true) {
-                    delay(1000.milliseconds)
                     _currentTime.value = System.currentTimeMillis()
+                    val sinceTime = _currentTime.value - 86400000
+                    val todayMoney = repository.totalSavedDayAgo(sinceTime).first()
+                    _todaySavedMoney.value = todayMoney
+                    delay(1000.milliseconds)
                     val expiredHabits = habits.value.filter {habit ->
                         val elapsed = (currentTime.value - habit.habitStartTime) / 1000
 elapsed >= 86400 && !habit.done
@@ -99,7 +103,8 @@ elapsed >= 86400 && !habit.done
 
             }
         }
-
+        private  val _todaySavedMoney = MutableStateFlow(0)
+        val todaySavedMoney: StateFlow<Int>  = _todaySavedMoney.asStateFlow()
 
         val totalSavedMoney: StateFlow<Int> = repository.totalSavedMoney
             .stateIn(
