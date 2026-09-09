@@ -33,7 +33,9 @@ class HabitRepository (private val habitDao: HabitDao, private val prefsHelper: 
     fun isOnboardingCompleted() : Boolean{
       return   prefsHelper.isOnboardingCompleted()
     }
-
+    fun totalSavedDayAgo(sinceTime: Long): Flow<Int> {
+        return habitDao.totalSavedDayAgo(sinceTime)
+    }
     suspend fun habitAsDone(id: Int, time: Long){
         habitDao.habitAsDone(id = id, time = time )
     }
