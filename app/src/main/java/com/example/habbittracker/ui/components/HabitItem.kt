@@ -29,11 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.data.models.Habit
@@ -79,21 +77,17 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
 
                 }
 
-                if (!habit.done) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = habit.name)
-                        Text(text = "5/7 дней", color = HabitTextSecondary, fontSize = 12.sp)
-                    }
-                } else {
+
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = habit.name,
-                            modifier = Modifier.alpha(0.5f),
-                            textDecoration = TextDecoration.LineThrough
                         )
                         Text(text = "+$savedMoneyToday/$savedMoneyTotal ", color = HabitGreen, fontSize = 12.sp)
+                        Text(text = "День ${habit.daysCompleted + 1}", color = HabitTextSecondary, fontSize = 12.sp)
+
+
                     }
-                }
                 IconButton(onClick = onToggle) {
                     Icon(
                         imageVector = if (habit.done) {
