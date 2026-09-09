@@ -56,6 +56,12 @@
                 calculateHoursPassed()
             }
         }
+        fun  completeOnboarding(){
+            repository.saveOnboardingCompleted(true)
+        }
+        fun isOnboardingCompleted(): Boolean{
+            return  repository.isOnboardingCompleted()
+        }
 
         fun addBonus(amount: Int) {
             _totalXp.value += amount

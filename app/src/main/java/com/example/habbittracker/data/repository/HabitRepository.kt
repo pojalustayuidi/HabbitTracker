@@ -27,6 +27,13 @@ class HabitRepository (private val habitDao: HabitDao, private val prefsHelper: 
        return prefsHelper.getStartTime()
     }
 
+    fun saveOnboardingCompleted(boolean: Boolean) {
+        prefsHelper.saveOnboardingCompleted(isBoarding = boolean)
+    }
+    fun isOnboardingCompleted() : Boolean{
+      return   prefsHelper.isOnboardingCompleted()
+    }
+
     suspend fun habitAsDone(id: Int){
         habitDao.habitAsDone(id = id)
     }

@@ -12,5 +12,11 @@ val prefs = context.getSharedPreferences("coinhabit_prefs", Context.MODE_PRIVATE
     fun getStartTime(): Long{
         return prefs.getLong("MY_START_TIME_KEY", 0L)
     }
-
+    fun saveOnboardingCompleted(isBoarding: Boolean) {
+        prefs.edit().putBoolean("ONBOARDING_COMPLETED_KEY", isBoarding).apply()
+    }
+    fun isOnboardingCompleted() : Boolean
+    {
+        return prefs.getBoolean("ONBOARDING_COMPLETED_KEY", false)
+    }
 }
