@@ -29,8 +29,7 @@ interface HabitDao {
 @Query(value = "UPDATE habits_table SET habitStartTime  = :time WHERE id = :id" )
     suspend fun updateStartTime(id: Int, time: Long)
 
-    @Query("UPDATE habits_table SET done = 1 WHERE id = :id")
-    suspend fun habitAsDone(id: Int)
-
+    @Query("UPDATE habits_table SET done = 1, completedAtTime = :time WHERE id = :id")
+    suspend fun habitAsDone(id: Int, time: Long)
 
 }
