@@ -82,7 +82,7 @@
                     delay(1000.milliseconds)
                     val expiredHabits = habits.value.filter {habit ->
                         val elapsed = (currentTime.value - habit.habitStartTime) / 1000
-elapsed >= 86400  // test
+elapsed >= 10  // test
                     }
                     expiredHabits.forEach {habit -> repository.habitAsDone(habit.id, _currentTime.value ) }
 
@@ -127,7 +127,6 @@ elapsed >= 86400  // test
         }
 
         fun addHabit(name: String) {
-
             if (name.isNotBlank()) {
                 viewModelScope.launch {
                     val newHabit = Habit(name = name, done = false, xp = 0, habitStartTime = System.currentTimeMillis())
