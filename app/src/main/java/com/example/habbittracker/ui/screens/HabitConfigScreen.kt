@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habbittracker.data.HabitPresets
 import com.example.habbittracker.data.models.HabitType
 import com.example.habbittracker.ui.theme.HabitGreen
-import com.example.habbittracker.viewmodel.HabitViewModel
+import com.example.habbittracker.presentation.habits.HabitViewModel
 
 @Composable
 fun HabitConfigScreen(

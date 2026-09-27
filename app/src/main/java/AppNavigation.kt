@@ -5,8 +5,8 @@
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
-    import com.example.habbittracker.viewmodel.HabitViewModel
-    import com.example.habbittracker.viewmodel.HabitViewModelFactory
+    import com.example.habbittracker.presentation.habits.HabitViewModel
+    import com.example.habbittracker.presentation.auth.HabitViewModelFactory
     import com.example.habbittracker.data.local.HabitDatabase
     import com.example.habbittracker.data.local.SharedPrefsHelper
     import com.example.habbittracker.data.repository.HabitRepository
