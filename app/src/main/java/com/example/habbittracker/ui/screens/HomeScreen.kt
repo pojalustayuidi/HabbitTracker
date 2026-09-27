@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habbittracker.viewmodel.HabitViewModel
+import com.example.habbittracker.presentation.habits.HabitViewModel
 import com.example.habbittracker.ui.components.CardLevel
 import com.example.habbittracker.ui.components.GreetingSection
 import com.example.habbittracker.ui.components.HabitItem

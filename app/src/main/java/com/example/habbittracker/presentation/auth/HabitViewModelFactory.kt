@@ -1,8 +1,9 @@
-package com.example.habbittracker.viewmodel
+package com.example.habbittracker.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.habbittracker.data.repository.HabitRepository
+import com.example.habbittracker.presentation.habits.HabitViewModel
 
 class HabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
