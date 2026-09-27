@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.ui.theme.HabitBorder
 import com.example.habbittracker.ui.theme.HabitSurface
-import com.example.habbittracker.ui.theme.HabitTextPrimary
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
