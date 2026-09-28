@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +47,13 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+
+
+    val nameError by viewModel.nameError.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val passwordError by viewModel.passwordError.collectAsState()
+
 
     val authState by viewModel.authState.collectAsState()
     LaunchedEffect(authState) {
@@ -89,23 +97,27 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel) {
                 color = HabitTextSecondary
             )
             CoinHabitTextField(
+                errorMessage = nameError,
                 onValueChange = { name = it },
                 placeholder = "Ваше имя",
                 value = name,
                 title = "Имя"
             )
             CoinHabitTextField(
+                errorMessage = emailError,
                 onValueChange = { email = it },
                 placeholder = "example@mail.com",
                 value = email,
                 title = "Email"
             )
             CoinHabitTextField(
+                errorMessage = passwordError,
                 onValueChange = { password = it },
                 placeholder = "******",
                 value = password,
                 title = "Пароль",
                 isPassword = true,
+                imeAction = ImeAction.Done
             )
             Spacer(modifier = Modifier.height(24.dp))
 
