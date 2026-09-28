@@ -26,6 +26,12 @@ class AuthViewModel(
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
+    fun resetState() {
+        _authState.value = AuthState.Idle
+        _nameError.value = null
+        _emailError.value = null
+        _passwordError.value = null
+    }
 
     fun register(email: String, nickname: String, password: String) {
         _nameError.value = null
@@ -77,12 +83,16 @@ class AuthViewModel(
         _passwordError.value = null
         var isValid = true
 
-
-        if (!email.contains("@")) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailError.value = "Некорректный Email"
             isValid = false
-
         }
+        if (password.isBlank()) {
+            _passwordError.value = "Введите пароль"
+            isValid = false
+        }
+
+        if (!isValid) return
         viewModelScope.launch {
             _authState.value = AuthState.Loading
 
@@ -90,10 +100,21 @@ class AuthViewModel(
                 val response = repository.login(email, password)
                 tokenManager.saveToken(response.token)
                 _authState.value = AuthState.Success
+            } catch (e: retrofit2.HttpException) {
+                val errorMessage = when (e.code()) {
+                    401, 403 -> "Неверный email или пароль"
+                    404 -> "Пользователь не найден"
+                    else -> "Ошибка сервера: ${e.code()}"
+                }
+                _authState.value = AuthState.Error(errorMessage)
+
+            } catch (e: java.io.IOException) {
+                _authState.value = AuthState.Error("Нет подключения к интернету. Проверьте сеть.")
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Неизвестная ошибка")
             }
 
         }
-    }
+
+ }
 }

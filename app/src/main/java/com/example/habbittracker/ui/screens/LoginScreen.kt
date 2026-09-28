@@ -43,27 +43,25 @@ import com.example.habbittracker.ui.theme.HabitGreen
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginClick: () -> Unit) {
-    var name by remember { mutableStateOf("") }
+fun LoginScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onRegisterClick: () -> Unit) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-
-    val nameError by viewModel.nameError.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
-
-
     val authState by viewModel.authState.collectAsState()
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
             onNextClick()
         }
     }
-
     val scrollState = rememberScrollState()
-    Scaffold { innerPadding ->
+
+    Scaffold {
+
+            innerPadding ->
         Column(
+
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -84,23 +82,16 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginCli
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Создайте аккаунт",
+                text = "Войдите в аккаунт",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Чтобы сохранить прогресс и не потерять его",
+                text = "Чтобы продолжить, введите свои данные",
                 fontSize = 16.sp,
                 color = HabitTextSecondary
-            )
-            CoinHabitTextField(
-                errorMessage = nameError,
-                onValueChange = { name = it },
-                placeholder = "Ваше имя",
-                value = name,
-                title = "Имя"
             )
             CoinHabitTextField(
                 errorMessage = emailError,
@@ -122,8 +113,7 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginCli
 
             Button(
                 onClick = {
-                    viewModel.register(
-                        nickname = name,
+                    viewModel.login(
                         email = email,
                         password = password
                     )
@@ -139,7 +129,7 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginCli
                 if (authState is AuthState.Loading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("Зарегистрироваться", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("Войти", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
             if (authState is AuthState.Error) {
@@ -153,9 +143,9 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginCli
                 )
             }
 
+
+
             Spacer(modifier = Modifier.height(24.dp))
-
-
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -193,21 +183,23 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginCli
                     .fillMaxHeight()
             ) {
                 Text(
-                    "Уже есть аккаунт?",
+                    "Нет аккаунта?",
                     textAlign = TextAlign.Center,
                     color = HabitTextSecondary,
                     modifier = Modifier.fillMaxHeight()
 
                 )
-                TextButton(onClick = { onLoginClick()
-                viewModel.resetState()
+                TextButton(onClick = {
+                    onRegisterClick()
+                    viewModel.resetState()
                 }) {
-                    Text("Войти", color = HabitGreen, fontWeight = FontWeight.Bold)
+                    Text("Зарегистрироваться", color = HabitGreen, fontWeight = FontWeight.Bold)
                 }
             }
 
         }
 
     }
-}
 
+
+}
