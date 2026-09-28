@@ -9,17 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habbittracker.presentation.auth.AuthState
 import com.example.habbittracker.presentation.auth.AuthViewModel
 import com.example.habbittracker.ui.components.registerScreen.CoinHabitTextField
 import com.example.habbittracker.ui.theme.HabitGreen
@@ -39,6 +44,16 @@ import com.example.habbittracker.ui.theme.HabitTextSecondary
 @Composable
 fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel) {
     var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    val authState by viewModel.authState.collectAsState()
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            onNextClick()
+        }
+    }
+
     val scrollState = rememberScrollState()
     Scaffold { innerPadding ->
         Column(
@@ -76,35 +91,56 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel) {
             CoinHabitTextField(
                 onValueChange = { name = it },
                 placeholder = "Ваше имя",
-                value = "",
+                value = name,
                 title = "Имя"
             )
             CoinHabitTextField(
-                onValueChange = { name = it },
+                onValueChange = { email = it },
                 placeholder = "example@mail.com",
-                value = "",
+                value = email,
                 title = "Email"
             )
             CoinHabitTextField(
-                onValueChange = { name = it },
+                onValueChange = { password = it },
                 placeholder = "******",
-                value = "",
+                value = password,
                 title = "Пароль",
                 isPassword = true,
             )
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* TODO: Вызвать viewModel.register */ },
+                onClick = {
+                    viewModel.register(
+                        nickname = name,
+                        email = email,
+                        password = password
+                    )
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
+                enabled = authState !is AuthState.Loading,
                 colors = ButtonDefaults.buttonColors(containerColor = HabitGreen),
                 shape = RoundedCornerShape(12.dp)
             ) {
-
-                Text("Зарегистрироваться", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                if (authState is AuthState.Loading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Зарегистрироваться", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
             }
+            if (authState is AuthState.Error) {
+                Text(
+                    text = (authState as AuthState.Error).message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -138,7 +174,8 @@ fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
