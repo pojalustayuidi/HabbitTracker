@@ -1,7 +1,9 @@
 package com.example.habbittracker.data.remote
 
 import com.example.habbittracker.data.local.TokenManager
+import com.example.habbittracker.data.models.Habit
 import com.example.habbittracker.data.remote.api.AuthApi
+import com.example.habbittracker.data.remote.api.HabitApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,5 +24,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthApi::class.java)
+    }
+
+    val habitApi: HabitApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(HabitApi::class.java)
     }
 }

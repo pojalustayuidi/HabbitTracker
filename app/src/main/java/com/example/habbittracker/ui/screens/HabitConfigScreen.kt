@@ -51,21 +51,23 @@ fun HabitConfigScreen(
         HabitPresets.defaultHabits.filter { selectedHabits.contains(it.id) && it.type == HabitType.BAD_HABIT }
     var currentIndex by remember { mutableIntStateOf(0) }
     var costs by remember { mutableStateOf(mapOf<Int, String>()) }
-    Column(modifier = Modifier
-        .imePadding()
-        .padding(16.dp)
-        .fillMaxSize(),
+    Column(
+        modifier = Modifier
+            .imePadding()
+            .padding(16.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    ) {
         if (badHabitsToConfigure.isNotEmpty()) {
 
             val currentHabit = badHabitsToConfigure[currentIndex]
             val costString = costs[currentHabit.id] ?: "0"
             val amount = costString.toDoubleOrNull() ?: 0.0
-            val calculateValue = kotlin.math.ceil(amount /30.0  ).toInt()
-            Row (
+            val calculateValue = kotlin.math.ceil(amount / 30.0).toInt()
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End){
+                horizontalArrangement = Arrangement.End
+            ) {
                 Text(text = "Шаг ${currentIndex + 1} из ${badHabitsToConfigure.size}")
             }
 
@@ -80,7 +82,7 @@ fun HabitConfigScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 placeholder = { Text("Введите сумму ₽") },
                 suffix = {
-                    IconButton(onClick = {costs = costs - currentHabit.id}) {
+                    IconButton(onClick = { costs = costs - currentHabit.id }) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = "Закрыть"
@@ -118,7 +120,8 @@ fun HabitConfigScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     viewModel.saveConfiguredHabits(costs)
-                    onFinishClick()}
+                    onFinishClick()
+                }
             ) {
                 Text("Готово")
             }
