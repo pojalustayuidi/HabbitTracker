@@ -3,7 +3,9 @@ package com.example.habbittracker.presentation.habits
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habbittracker.data.HabitPresets
+import com.example.habbittracker.data.local.TokenManager
 import com.example.habbittracker.data.models.Habit
+import com.example.habbittracker.data.remote.dto.HabitRequest
 import com.example.habbittracker.data.repository.HabitRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,24 +13,28 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-class HabitViewModel(private val repository: HabitRepository) : ViewModel() {
+class HabitViewModel(
+    private val repository: HabitRepository,
+    private val tokenManager: TokenManager
+) : ViewModel() {
 
     val habits: StateFlow<List<Habit>> = repository.allHabits.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
-private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
+    private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
     val selectedHabitsIds: StateFlow<Set<Int>> = _selectedHabitsIds.asStateFlow()
-    fun toggleHabitSelection(id: Int){
-      val currentSet =  selectedHabitsIds.value
-        _selectedHabitsIds.value = if (currentSet.contains(id)){
-             currentSet -  id
-        }else {
+    fun toggleHabitSelection(id: Int) {
+        val currentSet = selectedHabitsIds.value
+        _selectedHabitsIds.value = if (currentSet.contains(id)) {
+            currentSet - id
+        } else {
             currentSet + id
         }
 
@@ -40,28 +46,29 @@ private val _selectedHabitsIds = MutableStateFlow<Set<Int>>(emptySet())
 
     private val _hoursPassed = MutableStateFlow(0L)
     val hoursPassed: StateFlow<Long> = _hoursPassed.asStateFlow()
-    fun calculateHoursPassed(){
-viewModelScope.launch {
-    if(repository.getStartTime() == 0L)
-    {
-        _hoursPassed.value = 0L
-    }else {
-       _hoursPassed.value = (System.currentTimeMillis() - repository.getStartTime()) /  1000
-    }
-}
+    fun calculateHoursPassed() {
+        viewModelScope.launch {
+            if (repository.getStartTime() == 0L) {
+                _hoursPassed.value = 0L
+            } else {
+                _hoursPassed.value = (System.currentTimeMillis() - repository.getStartTime()) / 1000
+            }
+        }
     }
 
-    fun startTimeTracking(){
-        if (repository.getStartTime() == 0L){
+    fun startTimeTracking() {
+        if (repository.getStartTime() == 0L) {
             repository.saveStartTime(System.currentTimeMillis())
             calculateHoursPassed()
         }
     }
-    fun  completeOnboarding(){
+
+    fun completeOnboarding() {
         repository.saveOnboardingCompleted(true)
     }
-    fun isOnboardingCompleted(): Boolean{
-        return  repository.isOnboardingCompleted()
+
+    fun isOnboardingCompleted(): Boolean {
+        return repository.isOnboardingCompleted()
     }
 
     fun addBonus(amount: Int) {
@@ -80,36 +87,52 @@ viewModelScope.launch {
                 val todayMoney = repository.totalSavedDayAgo(sinceTime).first()
                 _todaySavedMoney.value = todayMoney
                 delay(1000.milliseconds)
-                val expiredHabits = habits.value.filter {habit ->
+                val expiredHabits = habits.value.filter { habit ->
                     val elapsed = (currentTime.value - habit.habitStartTime) / 1000
-elapsed >= 10  // test
+                    elapsed >= 10  // test
                 }
-                expiredHabits.forEach {habit -> repository.habitAsDone(habit.id, _currentTime.value ) }
+                expiredHabits.forEach { habit ->
+                    repository.habitAsDone(
+                        habit.id,
+                        _currentTime.value
+                    )
+                }
 
             }
         }
     }
+
     fun saveConfiguredHabits(coast: Map<Int, String>) {
         viewModelScope.launch {
-             coast.forEach { (id, costString) -> val preset = HabitPresets.defaultHabits.find {it.id == id}
-
-                if (preset != null){
-                    val savedMoney = costString.toIntOrNull() ?: 0
-                    val newHabit = Habit(
-                        name = preset.title,
-                        done = false,
-                        xp = 0,
-                        savedMoney = savedMoney,
-                        habitStartTime = System.currentTimeMillis()
+            val habitsRequests = coast.mapNotNull { (habitId, costString) ->
+                val habitPreset = HabitPresets.defaultHabits.find { it.id == habitId }
+                val monthlySpend = costString.toDoubleOrNull() ?: 0.0
+                if (habitPreset != null && monthlySpend > 0.0) {
+                    HabitRequest(
+                        title = habitPreset.title,
+                        monthlySpend = monthlySpend
                     )
-                    repository.insertHabit(newHabit)
+                } else {
+                    null
+                }
+            }
+            if (habitsRequests.isNotEmpty()){
+                val token = tokenManager.getToken.firstOrNull()
 
+                if (!token.isNullOrEmpty()){
+                    try {
+                        repository.sendHabitsToServer(token, habitsRequests)
+//                        TODO("В буущем сохранять эти привычки в локальную бд, чтобы homescrут покзала")
+                    } catch (e: Exception){
+                        e.printStackTrace()
+                    }
                 }
             }
 
         }
     }
-    private  val _todaySavedMoney = MutableStateFlow(0)
+
+    private val _todaySavedMoney = MutableStateFlow(0)
     val todaySavedMoney: StateFlow<Int> = _todaySavedMoney.asStateFlow()
 
     val totalSavedMoney: StateFlow<Int> = repository.totalSavedMoney

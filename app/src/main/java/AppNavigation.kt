@@ -23,6 +23,7 @@ import com.example.habbittracker.ui.screens.HabitSection
 import com.example.habbittracker.ui.screens.HomeScreen
 import com.example.habbittracker.ui.screens.LoginScreen
 import com.example.habbittracker.ui.screens.RegisterScreen
+
 // import com.example.habbittracker.ui.screens.WelcomeScreen // TODO: вернуть вместе с блоком welcome ниже
 
 @Composable
@@ -31,12 +32,17 @@ fun CoinHabitApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val database = HabitDatabase.getDatabase(context)
     val prefsHelper = SharedPrefsHelper(context)
-    val repository = HabitRepository(database.habitDao(), prefsHelper)
-    val factory = HabitViewModelFactory(repository)
+    val repository = HabitRepository(
+        database.habitDao(),
+        prefsHelper,
+        HabitApi = com.example.habbittracker.data.remote.RetrofitClient.habitApi
+    )
+    val tokenManager = remember { TokenManager(context) }
+
+    val factory = HabitViewModelFactory(repository, tokenManager)
     val sharedViewModel: HabitViewModel = viewModel(factory = factory)
 
-        //data layer
-    val tokenManager = remember { TokenManager(context) }
+    //data layer
     val authRepository = remember { AuthRepository(tokenManager) }
     val authFactory = AuthViewModelFactory(authRepository, tokenManager)
     val authViewModel: AuthViewModel = viewModel(factory = authFactory)
@@ -78,7 +84,7 @@ fun CoinHabitApp(modifier: Modifier = Modifier) {
                 onNextClick = {
                     navController.navigate("habit_section")
                 },
-                onLoginClick = {navController.navigate("login_screen")}
+                onLoginClick = { navController.navigate("login_screen") }
             )
         }
         composable("login_screen") {
@@ -87,7 +93,7 @@ fun CoinHabitApp(modifier: Modifier = Modifier) {
                 onNextClick = {
                     navController.navigate("habit_section")
                 },
-                onRegisterClick = {navController.navigate("register_screen")}
+                onRegisterClick = { navController.navigate("register_screen") }
             )
         }
         composable("habit_section") {

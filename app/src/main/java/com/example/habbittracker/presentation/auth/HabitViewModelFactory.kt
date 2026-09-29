@@ -2,14 +2,18 @@ package com.example.habbittracker.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.habbittracker.data.local.TokenManager
 import com.example.habbittracker.data.repository.HabitRepository
 import com.example.habbittracker.presentation.habits.HabitViewModel
 
-class HabitViewModelFactory(private val repository: HabitRepository) : ViewModelProvider.Factory {
+class HabitViewModelFactory(
+    private val repository: HabitRepository,
+    private val tokenManager: TokenManager
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HabitViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HabitViewModel(repository) as T
+            return HabitViewModel(repository, tokenManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
