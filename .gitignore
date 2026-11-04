@@ -1,2 +1,27 @@
-/build
+# Локальные настройки и секреты
+.env
+.env.*
+!.env.example
+local.properties
+
+# Gradle и Kotlin
 .gradle/
+.kotlin/
+**/build/
+
+# Локальные файлы Android Studio / IntelliJ
+*.iml
+.idea/caches/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+
+# Файлы операционной системы
+Thumbs.db
+.DS_Store
+
+# Подпись приложения
+*.jks
+*.keystore
