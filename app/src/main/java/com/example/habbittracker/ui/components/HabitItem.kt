@@ -29,11 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habbittracker.data.models.Habit
@@ -43,7 +41,7 @@ import com.example.habbittracker.ui.theme.HabitGreenLight
 import com.example.habbittracker.ui.theme.HabitTextSecondary
 
 @Composable
-fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: Int) {
+fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: Int,  savedMoneyTotal: Int, savedMoneyToday: Int) {
 
 
     var expanded by remember { mutableStateOf(false) }
@@ -79,21 +77,15 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
 
                 }
 
-                if (!habit.done) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = habit.name)
-                        Text(text = "5/7 дней", color = HabitTextSecondary, fontSize = 12.sp)
-                    }
-                } else {
+
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = habit.name,
-                            modifier = Modifier.alpha(0.5f),
-                            textDecoration = TextDecoration.LineThrough
                         )
-                        Text(text = "+${habit.xp} XP", color = HabitGreen, fontSize = 12.sp)
+                        Text(text = "+$savedMoneyToday/$savedMoneyTotal ", color = HabitGreen, fontSize = 12.sp)
+                        Text(text = "День ${habit.daysCompleted + 1}, ${formatElapsedTime(value)}", color = HabitTextSecondary, fontSize = 16.sp)
                     }
-                }
                 IconButton(onClick = onToggle) {
                     Icon(
                         imageVector = if (habit.done) {
@@ -143,7 +135,6 @@ fun HabitItem(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit, value: I
                 }
 
             }
-            Text(text = formatElapsedTime(value))
             LinearProgressIndicator(
                 progress = { 0.7f },
                 modifier = Modifier

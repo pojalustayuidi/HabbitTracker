@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habbittracker.viewmodel.HabitViewModel
+import com.example.habbittracker.presentation.habits.HabitViewModel
 import com.example.habbittracker.data.HabitPresets
 import com.example.habbittracker.data.models.HabitType
 import com.example.habbittracker.ui.components.HabitsCard

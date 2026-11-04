@@ -14,6 +14,7 @@ android {
     defaultConfig {
         applicationId = "com.example.habbittracker"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +43,7 @@ android {
 dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui.test)
+    implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -63,6 +65,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
-    ksp("androidx.room:room-compiler:2.8.4")
-    implementation("androidx.navigation:navigation-compose:2.10.0")
+    ksp("androidx.room:room-compiler:2.8.5")
+    implementation("androidx.navigation:navigation-compose:2.10.2")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.5.0")
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
 }
