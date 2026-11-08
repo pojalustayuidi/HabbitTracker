@@ -1,213 +1,220 @@
 package com.example.habbittracker.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+
+import androidx.compose.material3.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+
 import com.example.habbittracker.presentation.auth.AuthState
 import com.example.habbittracker.presentation.auth.AuthViewModel
-import com.example.habbittracker.ui.components.registerScreen.CoinHabitTextField
-import com.example.habbittracker.ui.theme.HabitGreen
-import com.example.habbittracker.ui.theme.HabitTextSecondary
+
+import com.example.habbittracker.ui.components.auth.AuthActionSection
+import com.example.habbittracker.ui.components.auth.AuthErrorBanner
+import com.example.habbittracker.ui.components.auth.AuthHeader
+import com.example.habbittracker.ui.components.auth.RegisterForm
+
+import com.example.habbittracker.ui.theme.CoinBackground
+import com.example.habbittracker.ui.theme.CoinGreen
+import com.example.habbittracker.ui.theme.CoinTextSecondary
 
 @Composable
-fun RegisterScreen(onNextClick: () -> Unit, viewModel: AuthViewModel, onLoginClick: () -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun RegisterScreen(
+    onNextClick: () -> Unit,
+    viewModel: AuthViewModel,
+    onLoginClick: () -> Unit
+) {
 
+    // Данные формы
+    var name by rememberSaveable {
+        mutableStateOf("")
+    }
 
+    var email by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var password by remember {
+        mutableStateOf("")
+    }
+
+    // Ошибки полей
     val nameError by viewModel.nameError.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
 
-
+    // Состояние авторизации
     val authState by viewModel.authState.collectAsState()
+
+    val isLoading = authState is AuthState.Loading
+    val serverError = authState as? AuthState.Error
+
+    // Управление клавиатурой
+    val keyboardController =
+        LocalSoftwareKeyboardController.current
+
+    val focusManager =
+        LocalFocusManager.current
+
+    // Единая отправка регистрации
+    val submitRegistration: () -> Unit = {
+
+        focusManager.clearFocus()
+
+        keyboardController?.hide()
+
+        if (!isLoading) {
+            viewModel.register(
+                nickname = name,
+                email = email,
+                password = password
+            )
+        }
+    }
+
+    // Переход после успешной регистрации
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
             onNextClick()
         }
     }
 
-    val scrollState = rememberScrollState()
-    Scaffold { innerPadding ->
+    Scaffold(
+        containerColor = CoinBackground
+    ) { innerPadding ->
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .imePadding()
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "CoinHabit",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = HabitGreen,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "Создайте аккаунт",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.ExtraBold,
+            Spacer(
+                modifier = Modifier.height(12.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "Чтобы сохранить прогресс и не потерять его",
-                fontSize = 16.sp,
-                color = HabitTextSecondary
+            // Шапка
+            AuthHeader(
+                title = "Начнём?",
+                subtitle = "Твои цели начинаются здесь."
             )
-            CoinHabitTextField(
-                errorMessage = nameError,
-                onValueChange = { name = it },
-                placeholder = "Ваше имя",
-                value = name,
-                title = "Имя"
-            )
-            CoinHabitTextField(
-                errorMessage = emailError,
-                onValueChange = { email = it },
-                placeholder = "example@mail.com",
-                value = email,
-                title = "Email"
-            )
-            CoinHabitTextField(
-                errorMessage = passwordError,
-                onValueChange = { password = it },
-                placeholder = "******",
-                value = password,
-                title = "Пароль",
-                isPassword = true,
-                imeAction = ImeAction.Done
-            )
-            Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = {
-                    viewModel.register(
-                        nickname = name,
-                        email = email,
-                        password = password
-                    )
+            Spacer(
+                modifier = Modifier.height(22.dp)
+            )
 
+            // Форма регистрации
+            RegisterForm(
+                name = name,
+                email = email,
+                password = password,
+
+                nameError = nameError,
+                emailError = emailError,
+                passwordError = passwordError,
+
+                onNameChange = {
+                    name = it
+                    viewModel.onRegisterNameEdited()
                 },
+
+                onEmailChange = {
+                    email = it
+                    viewModel.onRegisterEmailEdited()
+                },
+
+                onPasswordChange = {
+                    password = it
+                    viewModel.onRegisterPasswordEdited()
+                },
+
+                onSubmit = {
+                    submitRegistration()
+                }
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+            // Анимированная ошибка сервера
+            AuthErrorBanner(
+                message = serverError?.message
+            )
+
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
+
+            // Кнопка регистрации
+            AuthActionSection(
+                primaryText = "Зарегистрироваться",
+                loadingText = "Создаём аккаунт...",
+                isLoading = isLoading,
+
+                onPrimaryClick = {
+                    submitRegistration()
+                },
+
+                // Гостевой режим добавим позже
+                onGuestClick = null
+            )
+
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
+
+            // Переход к экрану входа
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                enabled = authState !is AuthState.Loading,
-                colors = ButtonDefaults.buttonColors(containerColor = HabitGreen),
-                shape = RoundedCornerShape(12.dp)
+                    .padding(bottom = 12.dp),
+
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                if (authState is AuthState.Loading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
-                    Text("Зарегистрироваться", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
+                Text(
+                    text = "Уже есть аккаунт?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = CoinTextSecondary
+                )
+
+                TextButton(
+                    enabled = !isLoading,
+
+                    onClick = {
+                        viewModel.resetState()
+                        onLoginClick()
+                    }
+                ) {
+
+                    Text(
+                        text = "Войти",
+                        color = CoinGreen,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
-            if (authState is AuthState.Error) {
-                Text(
-                    text = (authState as AuthState.Error).message,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
-
-                Text(
-                    text = "или",
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    color = HabitTextSecondary
-                )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray)
-
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            OutlinedButton(
-                onClick = { /* TODO: Google Auth */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Продолжить с Google", color = Color.Black, fontSize = 16.sp)
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Text(
-                    "Уже есть аккаунт?",
-                    textAlign = TextAlign.Center,
-                    color = HabitTextSecondary,
-                    modifier = Modifier.fillMaxHeight()
-
-                )
-                TextButton(onClick = { onLoginClick()
-                viewModel.resetState()
-                }) {
-                    Text("Войти", color = HabitGreen, fontWeight = FontWeight.Bold)
-                }
-            }
-
         }
-
     }
 }
-

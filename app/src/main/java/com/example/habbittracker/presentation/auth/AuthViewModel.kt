@@ -2,8 +2,10 @@ package com.example.habbittracker.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import com.example.habbittracker.data.local.TokenManager
 import com.example.habbittracker.data.repository.AuthRepository
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,18 +16,21 @@ class AuthViewModel(
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
-
     private val _emailError = MutableStateFlow<String?>(null)
-
     val emailError = _emailError.asStateFlow()
 
     private val _passwordError = MutableStateFlow<String?>(null)
     val passwordError = _passwordError.asStateFlow()
+
     private val _nameError = MutableStateFlow<String?>(null)
     val nameError = _nameError.asStateFlow()
 
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
-    val authState: StateFlow<AuthState> = _authState.asStateFlow()
+    private val _authState =
+        MutableStateFlow<AuthState>(AuthState.Idle)
+
+    val authState: StateFlow<AuthState> =
+        _authState.asStateFlow()
+
     fun resetState() {
         _authState.value = AuthState.Idle
         _nameError.value = null
@@ -34,11 +39,17 @@ class AuthViewModel(
     }
 
 
-    fun register(email: String, nickname: String, password: String) {
+    fun register(
+        email: String,
+        nickname: String,
+        password: String
+    ) {
         if (_authState.value is AuthState.Loading) return
+
         _nameError.value = null
         _emailError.value = null
         _passwordError.value = null
+
         var isValid = true
 
         if (nickname.isBlank()) {
@@ -46,92 +57,157 @@ class AuthViewModel(
             isValid = false
         }
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS
+                .matcher(email)
+                .matches()
+        ) {
             _emailError.value = "Некорректный Email"
             isValid = false
-
         }
+
         if (password.length < 6) {
-            _passwordError.value = "Пароль должен состоять минимум из 6 символов"
+            _passwordError.value =
+                "Пароль должен состоять минимум из 6 символов"
             isValid = false
         }
+
         if (!isValid) return
+
         _authState.value = AuthState.Loading
+
         viewModelScope.launch {
             try {
-                val response = repository.register(email, nickname, password)
+                val response = repository.register(
+                    email,
+                    nickname,
+                    password
+                )
+
                 tokenManager.saveToken(response.token)
+
                 _authState.value = AuthState.Success
 
-
             } catch (e: retrofit2.HttpException) {
+
                 val errorMessage = when (e.code()) {
                     400 -> "Ошибка в данных регистрации"
                     409 -> "Пользователь с таким email уже существует"
                     else -> "Ошибка сервера: ${e.code()}"
                 }
-                _authState.value = AuthState.Error(errorMessage)
+
+                _authState.value =
+                    AuthState.Error(errorMessage)
+
             } catch (e: java.net.ConnectException) {
-                _authState.value = AuthState.Error("Не удалось связаться с сервером. Попробуйте ещё раз")
+
+                _authState.value = AuthState.Error(
+                    "Не удалось связаться с сервером. Попробуйте ещё раз"
+                )
+
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Неизвестная ошибка")
+
+                _authState.value = AuthState.Error(
+                    e.message ?: "Неизвестная ошибка"
+                )
             }
         }
     }
+
 
     fun onLoginEmailEdited() {
         _emailError.value = null
         clearServerError()
     }
+
     fun onLoginPasswordEdited() {
         _passwordError.value = null
         clearServerError()
     }
+
+    fun onRegisterNameEdited() {
+        _nameError.value = null
+        clearServerError()
+    }
+
+    fun onRegisterEmailEdited() {
+        _emailError.value = null
+        clearServerError()
+    }
+
+    fun onRegisterPasswordEdited() {
+        _passwordError.value = null
+        clearServerError()
+    }
+
 
     private fun clearServerError() {
         if (_authState.value is AuthState.Error) {
             _authState.value = AuthState.Idle
         }
     }
-    fun login(email: String, password: String) {
-        if (_authState.value is AuthState.Loading) return
 
+    fun login(
+        email: String,
+        password: String
+    ) {
+        if (_authState.value is AuthState.Loading) return
 
         _emailError.value = null
         _passwordError.value = null
+
         var isValid = true
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS
+                .matcher(email)
+                .matches()
+        ) {
             _emailError.value = "Некорректный Email"
             isValid = false
         }
+
         if (password.isBlank()) {
             _passwordError.value = "Введите пароль"
             isValid = false
         }
 
         if (!isValid) return
+
         _authState.value = AuthState.Loading
+
         viewModelScope.launch {
             try {
-                val response = repository.login(email, password)
+                val response = repository.login(
+                    email,
+                    password
+                )
+
                 tokenManager.saveToken(response.token)
+
                 _authState.value = AuthState.Success
+
             } catch (e: retrofit2.HttpException) {
+
                 val errorMessage = when (e.code()) {
                     401, 403 -> "Неверный email или пароль"
                     404 -> "Пользователь не найден"
                     else -> "Ошибка сервера: ${e.code()}"
                 }
-                _authState.value = AuthState.Error(errorMessage)
+
+                _authState.value =
+                    AuthState.Error(errorMessage)
 
             } catch (e: java.io.IOException) {
-                _authState.value = AuthState.Error("Не удалось связаться с сервером. Попробуйте ещё раз.")
+
+                _authState.value = AuthState.Error(
+                    "Не удалось связаться с сервером. Попробуйте ещё раз."
+                )
+
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Неизвестная ошибка")
+
+                _authState.value = AuthState.Error(
+                    e.message ?: "Неизвестная ошибка"
+                )
             }
-
         }
-
- }
+    }
 }

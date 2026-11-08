@@ -1,5 +1,11 @@
 package com.example.habbittracker.ui.components.auth
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,14 +27,15 @@ import com.example.habbittracker.ui.theme.CoinBorder
 import com.example.habbittracker.ui.theme.CoinGreen
 import com.example.habbittracker.ui.theme.CoinTextSecondary
 
-
 @Composable
 fun AuthActionSection(
     primaryText: String,
     loadingText: String,
     isLoading: Boolean,
     onPrimaryClick: () -> Unit,
-    onGuestClick: () -> Unit,
+
+    onGuestClick: (() -> Unit)? = null,
+
     modifier: Modifier = Modifier
 ) {
 
@@ -58,12 +65,115 @@ fun AuthActionSection(
             )
         ) {
 
-            if (isLoading) {
+            AnimatedContent(
+                targetState = isLoading,
 
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                    color = Color.White
+                transitionSpec = {
+                    fadeIn(
+                        animationSpec = tween(180)
+                    ) togetherWith fadeOut(
+                        animationSpec = tween(120)
+                    )
+                },
+
+                label = "auth_button_animation"
+            ) { loading ->
+
+                if (loading) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = Color.White
+                        )
+
+                        Spacer(
+                            modifier = Modifier.width(10.dp)
+                        )
+
+                        Text(
+                            text = loadingText,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+
+                } else {
+
+                    Text(
+                        text = primaryText,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
+        }
+
+
+        val guestAction = onGuestClick
+
+        if (guestAction != null) {
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = CoinBorder
+                )
+
+                Text(
+                    text = "или",
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = CoinTextSecondary
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = CoinBorder
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            OutlinedButton(
+                onClick = guestAction,
+                enabled = !isLoading,
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+
+                shape = RoundedCornerShape(14.dp),
+
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = CoinBorder
+                ),
+
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = CoinGreen
+                )
+            ) {
+
+                Icon(
+                    imageVector = Icons.Outlined.Person,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
                 )
 
                 Spacer(
@@ -71,100 +181,22 @@ fun AuthActionSection(
                 )
 
                 Text(
-                    text = loadingText,
-                    style = MaterialTheme.typography.labelLarge
-                )
-
-            } else {
-
-                Text(
-                    text = primaryText,
+                    text = "Продолжить как гость",
                     style = MaterialTheme.typography.labelLarge
                 )
             }
-        }
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            HorizontalDivider(
-                modifier = Modifier.weight(1f),
-                color = CoinBorder
-            )
-
-            Text(
-                text = "или",
-
-                modifier = Modifier.padding(
-                    horizontal = 16.dp
-                ),
-
-                style = MaterialTheme.typography.bodyMedium,
-                color = CoinTextSecondary
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.weight(1f),
-                color = CoinBorder
-            )
-        }
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        OutlinedButton(
-            onClick = onGuestClick,
-            enabled = !isLoading,
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(54.dp),
-
-            shape = RoundedCornerShape(14.dp),
-
-            border = BorderStroke(
-                width = 1.dp,
-                color = CoinBorder
-            ),
-
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = CoinGreen
-            )
-        ) {
-
-            Icon(
-                imageVector = Icons.Outlined.Person,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-            )
 
             Spacer(
-                modifier = Modifier.width(10.dp)
+                modifier = Modifier.height(6.dp)
             )
 
             Text(
-                text = "Продолжить как гость",
-                style = MaterialTheme.typography.labelLarge
+                text = "Без email и пароля",
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.labelMedium,
+                color = CoinTextSecondary,
+                textAlign = TextAlign.Center
             )
         }
-
-        Spacer(
-            modifier = Modifier.height(6.dp)
-        )
-
-        Text(
-            text = "Без email и пароля",
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.labelMedium,
-            color = CoinTextSecondary,
-            textAlign = TextAlign.Center
-        )
     }
 }
