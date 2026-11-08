@@ -1,5 +1,5 @@
 package com.example.habbittracker.ui.components.registerScreen
-
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +12,7 @@ import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -28,6 +29,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.ImeAction
+import com.example.habbittracker.ui.theme.CoinBorder
+import com.example.habbittracker.ui.theme.CoinError
+import com.example.habbittracker.ui.theme.CoinGreen
+import com.example.habbittracker.ui.theme.CoinSurface
+import com.example.habbittracker.ui.theme.CoinTextSecondary
 import com.example.habbittracker.ui.theme.HabitGreen
 
 @Composable
@@ -37,9 +43,13 @@ fun CoinHabitTextField(
     value: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
+    leadingIcon: (@Composable () -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     isPassword: Boolean = false,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     errorMessage: String? = null
+
+
 ) {
     var passwordHiden by remember { mutableStateOf(false) }
 
@@ -56,13 +66,18 @@ fun CoinHabitTextField(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
+            keyboardActions = keyboardActions,
+            leadingIcon = leadingIcon,
 
-
-            supportingText = {
-                if (errorMessage != null) {
-                    Text(text = errorMessage, color = Color.Red)
+            supportingText = if (errorMessage != null)   {
+                {
+                    Text(
+                        text = errorMessage,
+                        color = CoinError,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
-            },
+            } else null,
             isError = errorMessage != null,
             value = value,
             onValueChange = onValueChange,
@@ -82,8 +97,18 @@ fun CoinHabitTextField(
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = HabitGreen,
-                focusedLabelColor = HabitGreen
+                focusedBorderColor = CoinGreen,
+                unfocusedBorderColor = CoinBorder,
+                errorBorderColor = CoinError,
+
+                focusedContainerColor = CoinSurface,
+                unfocusedContainerColor = CoinSurface,
+                errorContainerColor = CoinSurface,
+
+                cursorColor = CoinGreen,
+
+                focusedPlaceholderColor = CoinTextSecondary,
+                unfocusedPlaceholderColor = CoinTextSecondary
             )
         )
 

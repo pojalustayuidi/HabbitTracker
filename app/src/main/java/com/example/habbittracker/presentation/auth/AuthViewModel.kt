@@ -33,7 +33,9 @@ class AuthViewModel(
         _passwordError.value = null
     }
 
+
     fun register(email: String, nickname: String, password: String) {
+        if (_authState.value is AuthState.Loading) return
         _nameError.value = null
         _emailError.value = null
         _passwordError.value = null
@@ -54,8 +56,8 @@ class AuthViewModel(
             isValid = false
         }
         if (!isValid) return
+        _authState.value = AuthState.Loading
         viewModelScope.launch {
-            _authState.value = AuthState.Loading
             try {
                 val response = repository.register(email, nickname, password)
                 tokenManager.saveToken(response.token)
@@ -70,15 +72,31 @@ class AuthViewModel(
                 }
                 _authState.value = AuthState.Error(errorMessage)
             } catch (e: java.net.ConnectException) {
-                _authState.value = AuthState.Error("Нет подключения к серверу.Проверьте сеть")
+                _authState.value = AuthState.Error("Не удалось связаться с сервером. Попробуйте ещё раз")
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Неизвестная ошибка")
             }
         }
     }
 
+    fun onLoginEmailEdited() {
+        _emailError.value = null
+        clearServerError()
+    }
+    fun onLoginPasswordEdited() {
+        _passwordError.value = null
+        clearServerError()
+    }
 
+    private fun clearServerError() {
+        if (_authState.value is AuthState.Error) {
+            _authState.value = AuthState.Idle
+        }
+    }
     fun login(email: String, password: String) {
+        if (_authState.value is AuthState.Loading) return
+
+
         _emailError.value = null
         _passwordError.value = null
         var isValid = true
@@ -93,9 +111,8 @@ class AuthViewModel(
         }
 
         if (!isValid) return
+        _authState.value = AuthState.Loading
         viewModelScope.launch {
-            _authState.value = AuthState.Loading
-
             try {
                 val response = repository.login(email, password)
                 tokenManager.saveToken(response.token)
@@ -109,7 +126,7 @@ class AuthViewModel(
                 _authState.value = AuthState.Error(errorMessage)
 
             } catch (e: java.io.IOException) {
-                _authState.value = AuthState.Error("Нет подключения к интернету. Проверьте сеть.")
+                _authState.value = AuthState.Error("Не удалось связаться с сервером. Попробуйте ещё раз.")
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Неизвестная ошибка")
             }
