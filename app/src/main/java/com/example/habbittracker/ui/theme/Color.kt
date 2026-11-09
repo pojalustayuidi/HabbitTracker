@@ -2,26 +2,52 @@ package com.example.habbittracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val HabitGreen = Color(0xFF15803D)
-val HabitGreenLight = Color(0xFFDCFCE7)
-val HabitBackground = Color(0xFFF8F7F3)
+// Основные цвета бренда
+val CoinGreen = Color(0xFF075638)
+val CoinDarkGreen = Color(0xFF082E22)
+val CoinLightGreen = Color(0xFFE7F0E9)
 
-val HabitSurface = Color(0xFFFFFFFF)
-val HabitTextPrimary = Color(0xFF172018)
-val HabitTextSecondary = Color(0xFF667067)
+// Фон и поверхности
+val CoinBackground = Color(0xFFFAF8F2)
+val CoinSurface = Color(0xFFFFFEFA)
 
-val HabitAccent = Color(0xFFF59E0B)
-val HabitFire = Color(0xFFF97316)
+// Текст
+val CoinTextPrimary = Color(0xFF102B22)
+val CoinTextSecondary = Color(0xFF64746E)
 
-val HabitBorder = Color(0xFFE5E7DF)
+// Поля ввода
+val CoinBorder = Color(0xFFB4C0BA)
 
+// Ошибки
+val CoinError = Color(0xFFD92D20)
+val CoinErrorBackground = Color(0xFFFCE8E6)
+// Совместимость со старыми компонентами
 
-val HabitGreenDark = Color(0xFF1FBA63)
-val HabitGreenLightDark = Color(0xFF26D07C)
-val HabitBackgroundDark = Color(0xFF0F1115)
-val HabitSurfaceDark = Color(0xFF161A21)
-val HabitTextPrimaryDark = Color(0xFFF2F2F4)
-val HabitTextSecondaryDark = Color(0xFFA1A7B3)
-val HabitAccentDark = Color(0xFFFFB800)
-val HabitFireDark = Color(0xFFFF5A1F)
-val HabitBorderDark = Color(0xFF2A2F3A)
+val HabitGreen = CoinGreen
+
+val HabitGreenLight = CoinLightGreen
+
+val HabitGreenDark = CoinDarkGreen
+
+val HabitBackground = CoinBackground
+
+val HabitSurface = CoinSurface
+
+val HabitTextPrimary = CoinTextPrimary
+
+val HabitTextSecondary = CoinTextSecondary
+
+val HabitBorder = CoinBorder
+
+val HabitAccent = CoinGreen
+
+val HabitAccentDark = CoinLightGreen
+
+val HabitTextPrimaryDark = Color(0xFFF0F5EF)
+
+val HabitBackgroundDark = Color(0xFF101A15)
+
+val HabitSurfaceDark = Color(0xFF19251E)
+
+val HabitGreenLightDark = Color(0xFF293B30)
+val HabitFire = Color(0xFFFF8A3D)
