@@ -146,6 +146,50 @@ class AuthViewModel(
         }
     }
 
+    fun loginAsGuest() {
+        if (_authState.value is AuthState.Loading) return
+
+        _emailError.value = null
+        _passwordError.value = null
+        _nameError.value = null
+
+        _authState.value = AuthState.Loading
+
+        viewModelScope.launch {
+            try {
+                val response = repository.guest()
+
+                tokenManager.saveToken(response.token)
+
+                _authState.value = AuthState.Success
+
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+
+            } catch (e: retrofit2.HttpException) {
+                val errorMessage = when (e.code()) {
+                    400 -> "Ошибка создания гостевого аккаунта"
+                    429 -> "Слишком много запросов. Попробуйте позже"
+                    500, 502, 503 ->
+                        "Сервер временно недоступен"
+                    else -> "Ошибка сервера: ${e.code()}"
+                }
+
+                _authState.value = AuthState.Error(errorMessage)
+
+            } catch (e: java.io.IOException) {
+                _authState.value = AuthState.Error(
+                    "Не удалось подключиться к серверу. Проверьте интернет-соединение."
+                )
+
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(
+                    "Не удалось войти как гость. Попробуйте ещё раз."
+                )
+            }
+        }
+    }
+
     fun login(
         email: String,
         password: String

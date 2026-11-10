@@ -18,4 +18,9 @@ interface AuthApi {
 
     @GET("api/auth/me")
     suspend fun getMe(): UserDto
+
+
+
+    @POST("api/auth/guest")
+    suspend fun guest(): AuthResponse
 }

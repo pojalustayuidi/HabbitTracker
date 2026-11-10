@@ -22,4 +22,9 @@ class AuthRepository(private  val tokenManager: TokenManager) {
     suspend fun getMe() : UserDto{
         return api.getMe()
     }
+
+
+    suspend fun guest(): AuthResponse{
+        return api.guest()
+    }
 }
